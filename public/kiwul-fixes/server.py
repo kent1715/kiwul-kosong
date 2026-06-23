@@ -87,49 +87,65 @@ def _decode_to_png_bytes(image_value: str) -> bytes:
     if not image_value:
         raise ValueError("Empty image value")
 
+    raw: bytes | None = None
+
     # data:image/png;base64,....  /  data:image/jpeg;base64,....
     if image_value.startswith("data:"):
         header, _, b64 = image_value.partition(",")
         if not b64:
             raise ValueError(f"Malformed data URL: {header}")
         raw = base64.b64decode(b64)
-        img = Image.open(io.BytesIO(raw)).convert("RGB")
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        return buf.getvalue()
 
     # Windows path (D:\...) atau unix path
-    if os.path.exists(image_value):
+    elif os.path.exists(image_value):
         with open(image_value, "rb") as f:
             raw = f.read()
-        img = Image.open(io.BytesIO(raw)).convert("RGB")
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        return buf.getvalue()
 
     # http(s) URL
-    if image_value.lower().startswith(("http://", "https://")):
+    elif image_value.lower().startswith(("http://", "https://")):
         with httpx.Client(timeout=60) as c:
             r = c.get(image_value)
             r.raise_for_status()
             raw = r.content
-        img = Image.open(io.BytesIO(raw)).convert("RGB")
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        return buf.getvalue()
+    else:
+        raise ValueError(f"Cannot resolve image value: {image_value[:80]}")
 
-    raise ValueError(f"Cannot resolve image value: {image_value[:80]}")
+    # Validate & re-encode as PNG via PIL.
+    # Pertahankan RGBA kalau ada alpha channel (character reference bisa punya transparansi).
+    img = Image.open(io.BytesIO(raw))
+    if img.mode not in ("RGB", "RGBA"):
+        img = img.convert("RGBA" if "A" in img.getbands() or img.mode == "P" else "RGB")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
 
 
 def _stage_input_image(image_value: str) -> str:
-    """Tulis image ke folder input ComfyUI, return filename yang dipakai LoadImage."""
+    """
+    Upload image ke ComfyUI via /upload/image endpoint (cara resmi).
+    ComfyUI akan simpan ke folder input-nya sendiri dan langsung dikenali
+    oleh LoadImage node — tanpa masalah cache atau validasi.
+    """
     png = _decode_to_png_bytes(image_value)
-    COMFYUI_INPUT_DIR.mkdir(parents=True, exist_ok=True)
     filename = f"kiwul_{uuid.uuid4().hex}.png"
-    target = COMFYUI_INPUT_DIR / filename
-    target.write_bytes(png)
-    log.info("staged input image -> %s (%d bytes)", target, len(png))
-    return filename
+
+    with httpx.Client(timeout=120) as client:
+        files = {"image": (filename, png, "image/png")}
+        data = {"overwrite": "true", "type": "input"}
+        r = client.post(f"{COMFYUI_URL}/upload/image", files=files, data=data)
+        if r.status_code != 200:
+            raise RuntimeError(
+                f"ComfyUI /upload/image HTTP {r.status_code}: {r.text[:300]}"
+            )
+        result = r.json()
+        uploaded_name = result.get("name", filename)
+        uploaded_subfolder = result.get("subfolder", "")
+        # ComfyUI bisa return name dengan subfolder prefix; LoadImage butuh nama relatif
+        final_name = f"{uploaded_subfolder}/{uploaded_name}" if uploaded_subfolder else uploaded_name
+        log.info(
+            "uploaded input image -> %s (%d bytes)", final_name, len(png)
+        )
+        return final_name
 
 
 def _apply_reference_images(workflow: dict, reference_images: list[dict]) -> None:
