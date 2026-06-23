@@ -1,0 +1,2002 @@
+     1→From c29b5155c117dc7547b30d689faf3c4c8578c0ce Mon Sep 17 00:00:00 2001
+     2→From: Z User <z@container>
+     3→Date: Mon, 15 Jun 2026 19:07:16 +0000
+     4→Subject: [PATCH 1/2] 712823e1-2041-4bc4-90af-12fae34c1b67
+     5→
+     6→---
+     7→ src/components/storyboard/GambarColumn.tsx    | 201 ++++++++++
+     8→ .../storyboard/SceneStatusBadge.tsx           |  24 ++
+     9→ .../storyboard/StoryboardStudio.tsx           | 232 ++++++++---
+    10→ src/components/storyboard/StorylineColumn.tsx | 149 +++++++
+    11→ src/components/storyboard/TopToolbar.tsx      | 378 +++++++-----------
+    12→ src/components/storyboard/VideoColumn.tsx     | 214 ++++++++++
+    13→ ...hatGPT Image Jun 16, 2026, 01_56_51 AM.png | Bin 0 -> 1747847 bytes
+    14→ 7 files changed, 905 insertions(+), 293 deletions(-)
+    15→ create mode 100644 src/components/storyboard/GambarColumn.tsx
+    16→ create mode 100644 src/components/storyboard/SceneStatusBadge.tsx
+    17→ create mode 100644 src/components/storyboard/StorylineColumn.tsx
+    18→ create mode 100644 src/components/storyboard/VideoColumn.tsx
+    19→ create mode 100755 upload/ChatGPT Image Jun 16, 2026, 01_56_51 AM.png
+    20→
+    21→diff --git a/src/components/storyboard/GambarColumn.tsx b/src/components/storyboard/GambarColumn.tsx
+    22→new file mode 100644
+    23→index 0000000..7857914
+    24→--- /dev/null
+    25→+++ b/src/components/storyboard/GambarColumn.tsx
+    26→@@ -0,0 +1,201 @@
+    27→+'use client';
+    28→+
+    29→+import { useCallback, useState } from 'react';
+    30→+import {
+    31→+  Download,
+    32→+  RotateCcw,
+    33→+  ImageIcon,
+    34→+  Loader2,
+    35→+  MoreHorizontal,
+    36→+} from 'lucide-react';
+    37→+import { Button } from '@/components/ui/button';
+    38→+import { AspectRatio } from '@/components/ui/aspect-ratio';
+    39→+import { useStoryboardStore } from '@/lib/store/storyboard-store';
+    40→+import { toast } from 'sonner';
+    41→+
+    42→+export function GambarColumn() {
+    43→+  const { scenes, currentProject, updateScene } = useStoryboardStore();
+    44→+  const [generating, setGenerating] = useState<string | null>(null);
+    45→+
+    46→+  const aspectRatio = currentProject?.aspect_ratio === '16:9' ? 16 / 9 : 9 / 16;
+    47→+
+    48→+  const handleGenerateImage = useCallback(
+    49→+    async (sceneId: string) => {
+    50→+      if (!currentProject) return;
+    51→+      setGenerating(sceneId);
+    52→+      updateScene(sceneId, { image_status: 'running', error_message: null });
+    53→+      try {
+    54→+        const res = await fetch(
+    55→+          `/api/storyboard/${currentProject.id}/scenes/${sceneId}/image`,
+    56→+          { method: 'POST' }
+    57→+        );
+    58→+        const data = await res.json();
+    59→+        if (data.ok) {
+    60→+          updateScene(sceneId, {
+    61→+            image_status: 'completed',
+    62→+            image_path: data.image_path,
+    63→+            error_message: null,
+    64→+          });
+    65→+          toast.success('Gambar berhasil dibuat');
+    66→+        } else {
+    67→+          updateScene(sceneId, {
+    68→+            image_status: 'failed',
+    69→+            error_message: data.error || 'Gagal membuat gambar',
+    70→+          });
+    71→+          toast.error(data.error || 'Gagal membuat gambar');
+    72→+        }
+    73→+      } catch (err) {
+    74→+        updateScene(sceneId, {
+    75→+          image_status: 'failed',
+    76→+          error_message: err instanceof Error ? err.message : 'Unknown error',
+    77→+        });
+    78→+        toast.error('Gagal membuat gambar');
+    79→+      } finally {
+    80→+        setGenerating(null);
+    81→+      }
+    82→+    },
+    83→+    [currentProject, updateScene]
+    84→+  );
+    85→+
+    86→+  const handleDownloadImage = useCallback(
+    87→+    async (sceneId: string, sceneNumber: number) => {
+    88→+      if (!currentProject) return;
+    89→+      try {
+    90→+        const res = await fetch(
+    91→+          `/api/storyboard/${currentProject.id}/scenes/${sceneId}/download/image`
+    92→+        );
+    93→+        if (res.ok) {
+    94→+          const blob = await res.blob();
+    95→+          const url = URL.createObjectURL(blob);
+    96→+          const a = document.createElement('a');
+    97→+          a.href = url;
+    98→+          a.download = `scene_${sceneNumber}_image.png`;
+    99→+          a.click();
+   100→+          URL.revokeObjectURL(url);
+   101→+        } else {
+   102→+          toast.error('Gagal mengunduh gambar');
+   103→+        }
+   104→+      } catch {
+   105→+        toast.error('Gagal mengunduh gambar');
+   106→+      }
+   107→+    },
+   108→+    [currentProject]
+   109→+  );
+   110→+
+   111→+  return (
+   112→+    <div className="p-3 space-y-4">
+   113→+      {scenes.map((scene) => {
+   114→+        const imageUrl = scene.image_path
+   115→+          ? `/api/storyboard/${currentProject?.id}/scenes/${scene.scene_id}/download/image`
+   116→+          : null;
+   117→+        const isGenerating = generating === scene.scene_id;
+   118→+
+   119→+        return (
+   120→+          <div
+   121→+            key={scene.scene_id}
+   122→+            className="rounded-xl border border-border bg-card p-3 space-y-2.5"
+   123→+          >
+   124→+            {/* Scene Number Label */}
+   125→+            <div className="flex items-center justify-between">
+   126→+              <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+   127→+                Scene #{String(scene.scene_number).padStart(2, '0')}
+   128→+              </span>
+   129→+              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+   130→+                <MoreHorizontal className="h-3 w-3" />
+   131→+              </Button>
+   132→+            </div>
+   133→+
+   134→+            {/* Image Preview */}
+   135→+            <div className="rounded-lg border bg-muted/30 overflow-hidden">
+   136→+              <AspectRatio ratio={aspectRatio} className="bg-black/5 dark:bg-white/5">
+   137→+                {imageUrl ? (
+   138→+                  <img
+   139→+                    src={imageUrl}
+   140→+                    alt={`Scene ${scene.scene_number}`}
+   141→+                    className="w-full h-full object-contain"
+   142→+                  />
+   143→+                ) : (
+   144→+                  <div className="w-full h-full flex items-center justify-center">
+   145→+                    <div className="text-center">
+   146→+                      {isGenerating ? (
+   147→+                        <Loader2 className="h-8 w-8 mx-auto text-emerald-500/50 animate-spin" />
+   148→+                      ) : (
+   149→+                        <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground/30" />
+   150→+                      )}
+   151→+                      <p className="text-[10px] text-muted-foreground mt-1">
+   152→+                        {scene.image_status === 'pending'
+   153→+                          ? 'Belum Dibuat'
+   154→+                          : scene.image_status === 'running'
+   155→+                          ? 'Memproses...'
+   156→+                          : scene.image_status === 'failed'
+   157→+                          ? 'Gagal'
+   158→+                          : 'Tidak ada gambar'}
+   159→+                      </p>
+   160→+                    </div>
+   161→+                  </div>
+   162→+                )}
+   163→+              </AspectRatio>
+   164→+            </div>
+   165→+
+   166→+            {/* Prompt Gambar */}
+   167→+            <div className="space-y-1">
+   168→+              <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+   169→+                Prompt Gambar
+   170→+              </p>
+   171→+              <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+   172→+                {scene.image_prompt}
+   173→+              </p>
+   174→+            </div>
+   175→+
+   176→+            {/* Action Buttons */}
+   177→+            <div className="flex items-center gap-2">
+   178→+              {!imageUrl ? (
+   179→+                <Button
+   180→+                  variant="outline"
+   181→+                  size="sm"
+   182→+                  className="h-7 text-[10px] gap-1 flex-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+   183→+                  onClick={() => handleGenerateImage(scene.scene_id)}
+   184→+                  disabled={isGenerating || scene.locked}
+   185→+                >
+   186→+                  {isGenerating ? (
+   187→+                    <Loader2 className="h-3 w-3 animate-spin" />
+   188→+                  ) : (
+   189→+                    <RotateCcw className="h-3 w-3" />
+   190→+                  )}
+   191→+                  Generate
+   192→+                </Button>
+   193→+              ) : (
+   194→+                <>
+   195→+                  <Button
+   196→+                    variant="outline"
+   197→+                    size="sm"
+   198→+                    className="h-7 text-[10px] gap-1 flex-1"
+   199→+                    onClick={() => handleGenerateImage(scene.scene_id)}
+   200→+                    disabled={isGenerating || scene.locked}
+   201→+                  >
+   202→+                    {isGenerating ? (
+   203→+                      <Loader2 className="h-3 w-3 animate-spin" />
+   204→+                    ) : (
+   205→+                      <RotateCcw className="h-3 w-3" />
+   206→+                    )}
+   207→+                    Regenerate
+   208→+                  </Button>
+   209→+                  <Button
+   210→+                    variant="outline"
+   211→+                    size="sm"
+   212→+                    className="h-7 text-[10px] gap-1 flex-1"
+   213→+                    onClick={() => handleDownloadImage(scene.scene_id, scene.scene_number)}
+   214→+                    disabled={!imageUrl}
+   215→+                  >
+   216→+                    <Download className="h-3 w-3" />
+   217→+                    Download
+   218→+                  </Button>
+   219→+                </>
+   220→+              )}
+   221→+            </div>
+   222→+          </div>
+   223→+        );
+   224→+      })}
+   225→+    </div>
+   226→+  );
+   227→+}
+   228→diff --git a/src/components/storyboard/SceneStatusBadge.tsx b/src/components/storyboard/SceneStatusBadge.tsx
+   229→new file mode 100644
+   230→index 0000000..334c10b
+   231→--- /dev/null
+   232→+++ b/src/components/storyboard/SceneStatusBadge.tsx
+   233→@@ -0,0 +1,24 @@
+   234→+'use client';
+   235→+
+   236→+import { Badge } from '@/components/ui/badge';
+   237→+import { STATUS_COLORS } from '@/types/storyboard';
+   238→+
+   239→+interface SceneStatusBadgeProps {
+   240→+  status: string;
+   241→+  label?: string;
+   242→+  className?: string;
+   243→+}
+   244→+
+   245→+export function SceneStatusBadge({ status, label, className }: SceneStatusBadgeProps) {
+   246→+  const colorClass = STATUS_COLORS[status] || STATUS_COLORS.pending;
+   247→+  const displayLabel = label || status;
+   248→+
+   249→+  return (
+   250→+    <Badge
+   251→+      variant="outline"
+   252→+      className={`${colorClass} text-[9px] px-1.5 py-0 font-medium ${className}`}
+   253→+    >
+   254→+      {displayLabel}
+   255→+    </Badge>
+   256→+  );
+   257→+}
+   258→diff --git a/src/components/storyboard/StoryboardStudio.tsx b/src/components/storyboard/StoryboardStudio.tsx
+   259→index b5ff3c7..07effb2 100644
+   260→--- a/src/components/storyboard/StoryboardStudio.tsx
+   261→+++ b/src/components/storyboard/StoryboardStudio.tsx
+   262→@@ -1,34 +1,92 @@
+   263→ 'use client';
+   264→ 
+   265→-import { useCallback, useEffect, useState } from 'react';
+   266→-import { motion, AnimatePresence } from 'framer-motion';
+   267→+import { useCallback, useState } from 'react';
+   268→+import { motion } from 'framer-motion';
+   269→ import {
+   270→-  ResizablePanelGroup,
+   271→-  ResizablePanel,
+   272→-  ResizableHandle,
+   273→-} from '@/components/ui/resizable';
+   274→+  Upload,
+   275→+  Clapperboard,
+   276→+  Moon,
+   277→+  Sun,
+   278→+  Sparkles,
+   279→+  Save,
+   280→+  Eye,
+   281→+  Pencil,
+   282→+  MoreHorizontal,
+   283→+  FileText,
+   284→+  ImageIcon,
+   285→+  Film,
+   286→+} from 'lucide-react';
+   287→ import { Button } from '@/components/ui/button';
+   288→-import { Upload, Clapperboard, Moon, Sun, PanelLeftClose, PanelLeft } from 'lucide-react';
+   289→ import { useTheme } from 'next-themes';
+   290→ import { useStoryboardStore } from '@/lib/store/storyboard-store';
+   291→ import { TopToolbar } from './TopToolbar';
+   292→-import { SceneSidebar } from './SceneSidebar';
+   293→-import { SceneDetailPanel } from './SceneDetailPanel';
+   294→-import { PreviewPanel } from './PreviewPanel';
+   295→+import { StorylineColumn } from './StorylineColumn';
+   296→+import { GambarColumn } from './GambarColumn';
+   297→+import { VideoColumn } from './VideoColumn';
+   298→ import { LoadJsonDialog } from './LoadJsonDialog';
+   299→ import { ProviderSettingsDialog } from './ProviderSettingsDialog';
+   300→+import { toast } from 'sonner';
+   301→ 
+   302→ export function StoryboardStudio() {
+   303→   const { currentProject, setLoadJsonDialogOpen } = useStoryboardStore();
+   304→   const { theme, setTheme } = useTheme();
+   305→-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+   306→-  const [previewCollapsed, setPreviewCollapsed] = useState(false);
+   307→+  const [mobileTab, setMobileTab] = useState<'storyline' | 'gambar' | 'video'>('storyline');
+   308→+
+   309→+  const handleGenerateAll = useCallback(async () => {
+   310→+    if (!currentProject) return;
+   311→+    try {
+   312→+      const res = await fetch(`/api/storyboard/${currentProject.id}/generate-all`, {
+   313→+        method: 'POST',
+   314→+        headers: { 'Content-Type': 'application/json' },
+   315→+        body: JSON.stringify({
+   316→+          mode: 'image_and_video',
+   317→+          skip_locked: true,
+   318→+          failed_only: false,
+   319→+          concurrency: { image: 1, video: 1 },
+   320→+        }),
+   321→+      });
+   322→+      const data = await res.json();
+   323→+      if (data.ok) {
+   324→+        useStoryboardStore.getState().setActiveJob({
+   325→+          job_id: data.job_id,
+   326→+          status: 'running',
+   327→+          progress: {
+   328→+            total_tasks: data.total_tasks || 0,
+   329→+            completed_tasks: 0,
+   330→+            failed_tasks: 0,
+   331→+            queued_tasks: data.total_tasks || 0,
+   332→+            running_tasks: 0,
+   333→+          },
+   334→+          updated_scenes: [],
+   335→+        });
+   336→+        toast.success('Generate All dimulai');
+   337→+      } else {
+   338→+        toast.error(data.error || 'Gagal memulai generate');
+   339→+      }
+   340→+    } catch {
+   341→+      toast.error('Gagal memulai generate');
+   342→+    }
+   343→+  }, [currentProject]);
+   344→+
+   345→+  const handleSave = useCallback(async () => {
+   346→+    if (!currentProject) return;
+   347→+    try {
+   348→+      const res = await fetch(`/api/storyboard/${currentProject.id}`);
+   349→+      const data = await res.json();
+   350→+      if (data.ok) {
+   351→+        toast.success('Project tersimpan');
+   352→+      } else {
+   353→+        toast.error('Gagal menyimpan');
+   354→+      }
+   355→+    } catch {
+   356→+      toast.error('Gagal menyimpan');
+   357→+    }
+   358→+  }, [currentProject]);
+   359→ 
+   360→   // Empty state - no project loaded
+   361→   if (!currentProject) {
+   362→     return (
+   363→-      <div className="flex flex-col h-screen bg-background">
+   364→-        <TopToolbar />
+   365→+      <div className="flex flex-col min-h-screen bg-background">
+   366→         <LoadJsonDialog />
+   367→         <ProviderSettingsDialog />
+   368→ 
+   369→@@ -61,7 +119,7 @@ export function StoryboardStudio() {
+   370→         </div>
+   371→ 
+   372→         {/* Footer */}
+   373→-        <footer className="border-t px-4 py-2 text-xs text-muted-foreground flex items-center justify-between">
+   374→+        <footer className="border-t px-4 py-2 text-xs text-muted-foreground flex items-center justify-between mt-auto">
+   375→           <span>Kiwul Storyboard Studio v1.0</span>
+   376→           <Button
+   377→             variant="ghost"
+   378→@@ -76,52 +134,118 @@ export function StoryboardStudio() {
+   379→     );
+   380→   }
+   381→ 
+   382→-  // Project loaded - show the main layout
+   383→+  // Project loaded - 3 column card layout
+   384→   return (
+   385→     <div className="flex flex-col h-screen bg-background">
+   386→-      <TopToolbar />
+   387→       <LoadJsonDialog />
+   388→       <ProviderSettingsDialog />
+   389→ 
+   390→-      <div className="flex-1 min-h-0">
+   391→-        <ResizablePanelGroup direction="horizontal" className="h-full">
+   392→-          {/* Left Sidebar - Scene List */}
+   393→-          {!sidebarCollapsed && (
+   394→-            <>
+   395→-              <ResizablePanel defaultSize={18} minSize={12} maxSize={30}>
+   396→-                <SceneSidebar />
+   397→-              </ResizablePanel>
+   398→-              <ResizableHandle withHandle />
+   399→-            </>
+   400→-          )}
+   401→-
+   402→-          {/* Center Panel - Scene Detail */}
+   403→-          <ResizablePanel defaultSize={previewCollapsed ? 82 : 45} minSize={30}>
+   404→-            <div className="relative h-full flex flex-col overflow-hidden">
+   405→-              <Button
+   406→-                variant="ghost"
+   407→-                size="sm"
+   408→-                className="absolute top-2 left-2 z-10 h-7 w-7 p-0"
+   409→-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+   410→-              >
+   411→-                {sidebarCollapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
+   412→-              </Button>
+   413→-              <div className="flex-1 min-h-0">
+   414→-                <SceneDetailPanel />
+   415→+      {/* Header */}
+   416→+      <header className="border-b bg-background/95 backdrop-blur shrink-0">
+   417→+        <div className="flex items-center justify-between px-4 py-3">
+   418→+          <div className="flex items-center gap-3">
+   419→+            <div className="flex items-center gap-2">
+   420→+              <Clapperboard className="h-5 w-5 text-emerald-600" />
+   421→+              <h1 className="font-bold text-sm">Kiwul Studio</h1>
+   422→+            </div>
+   423→+            <div className="h-4 w-px bg-border" />
+   424→+            <div>
+   425→+              <div className="flex items-center gap-1.5">
+   426→+                <span className="font-semibold text-sm">{currentProject.title}</span>
+   427→+                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+   428→+                  <Pencil className="h-3 w-3 text-muted-foreground" />
+   429→+                </Button>
+   430→               </div>
+   431→+              <p className="text-[10px] text-muted-foreground">
+   432→+                Waktu Pembuatan: {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}, {new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+   433→+              </p>
+   434→             </div>
+   435→-          </ResizablePanel>
+   436→-
+   437→-          {/* Right Panel - Preview */}
+   438→-          {!previewCollapsed && (
+   439→-            <>
+   440→-              <ResizableHandle withHandle />
+   441→-              <ResizablePanel defaultSize={37} minSize={20} maxSize={55}>
+   442→-                <PreviewPanel />
+   443→-              </ResizablePanel>
+   444→-            </>
+   445→-          )}
+   446→-        </ResizablePanelGroup>
+   447→+          </div>
+   448→+          <div className="flex items-center gap-2">
+   449→+            <Button
+   450→+              size="sm"
+   451→+              className="h-8 text-xs gap-1.5 bg-violet-600 hover:bg-violet-700 text-white"
+   452→+              onClick={handleGenerateAll}
+   453→+            >
+   454→+              <Sparkles className="h-3.5 w-3.5" />
+   455→+              Generate All
+   456→+            </Button>
+   457→+            <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={handleSave}>
+   458→+              <Save className="h-3.5 w-3.5" />
+   459→+              Simpan
+   460→+            </Button>
+   461→+            <Button variant="outline" size="sm" className="h-8 text-xs gap-1">
+   462→+              <Eye className="h-3.5 w-3.5" />
+   463→+              Preview
+   464→+            </Button>
+   465→+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+   466→+              <MoreHorizontal className="h-4 w-4" />
+   467→+            </Button>
+   468→+          </div>
+   469→+        </div>
+   470→+
+   471→+        {/* Column Headers - Desktop */}
+   472→+        <div className="hidden md:grid grid-cols-3 border-t">
+   473→+          <div className="flex items-center gap-2 px-4 py-2 border-r">
+   474→+            <div className="h-2.5 w-2.5 rounded-full bg-violet-500" />
+   475→+            <span className="text-xs font-semibold text-violet-600 dark:text-violet-400">Storyline</span>
+   476→+          </div>
+   477→+          <div className="flex items-center gap-2 px-4 py-2 border-r">
+   478→+            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+   479→+            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Gambar</span>
+   480→+          </div>
+   481→+          <div className="flex items-center gap-2 px-4 py-2">
+   482→+            <div className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+   483→+            <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Video</span>
+   484→+          </div>
+   485→+        </div>
+   486→+
+   487→+        {/* Mobile Tab Selector */}
+   488→+        <div className="flex md:hidden border-t">
+   489→+          <button
+   490→+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${mobileTab === 'storyline' ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50 dark:text-violet-400 dark:bg-violet-950/20 dark:border-violet-400' : 'text-muted-foreground'}`}
+   491→+            onClick={() => setMobileTab('storyline')}
+   492→+          >
+   493→+            <FileText className="h-3.5 w-3.5" />
+   494→+            Storyline
+   495→+          </button>
+   496→+          <button
+   497→+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${mobileTab === 'gambar' ? 'text-emerald-600 border-b-2 border-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-400' : 'text-muted-foreground'}`}
+   498→+            onClick={() => setMobileTab('gambar')}
+   499→+          >
+   500→+            <ImageIcon className="h-3.5 w-3.5" />
+   501→+            Gambar
+   502→+          </button>
+   503→+          <button
+   504→+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${mobileTab === 'video' ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/20 dark:border-blue-400' : 'text-muted-foreground'}`}
+   505→+            onClick={() => setMobileTab('video')}
+   506→+          >
+   507→+            <Film className="h-3.5 w-3.5" />
+   508→+            Video
+   509→+          </button>
+   510→+        </div>
+   511→+
+   512→+        <TopToolbar />
+   513→+      </header>
+   514→+
+   515→+      {/* 3-Column Content - Desktop */}
+   516→+      <div className="hidden md:grid flex-1 min-h-0 grid-cols-3 divide-x divide-border overflow-hidden">
+   517→+        <div className="overflow-y-auto custom-scrollbar">
+   518→+          <StorylineColumn />
+   519→+        </div>
+   520→+        <div className="overflow-y-auto custom-scrollbar">
+   521→+          <GambarColumn />
+   522→+        </div>
+   523→+        <div className="overflow-y-auto custom-scrollbar">
+   524→+          <VideoColumn />
+   525→+        </div>
+   526→+      </div>
+   527→+
+   528→+      {/* Mobile Single-Column Content */}
+   529→+      <div className="md:hidden flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+   530→+        {mobileTab === 'storyline' && <StorylineColumn />}
+   531→+        {mobileTab === 'gambar' && <GambarColumn />}
+   532→+        {mobileTab === 'video' && <VideoColumn />}
+   533→       </div>
+   534→ 
+   535→       {/* Footer */}
+   536→diff --git a/src/components/storyboard/StorylineColumn.tsx b/src/components/storyboard/StorylineColumn.tsx
+   537→new file mode 100644
+   538→index 0000000..ab3c77a
+   539→--- /dev/null
+   540→+++ b/src/components/storyboard/StorylineColumn.tsx
+   541→@@ -0,0 +1,149 @@
+   542→+'use client';
+   543→+
+   544→+import { useCallback } from 'react';
+   545→+import { MoreHorizontal, Lock, Unlock } from 'lucide-react';
+   546→+import { Button } from '@/components/ui/button';
+   547→+import { Textarea } from '@/components/ui/textarea';
+   548→+import { useStoryboardStore, SceneData } from '@/lib/store/storyboard-store';
+   549→+import { SceneStatusBadge } from './SceneStatusBadge';
+   550→+import { toast } from 'sonner';
+   551→+
+   552→+function getStatusLabel(status: string, type: 'img' | 'vid'): string {
+   553→+  switch (status) {
+   554→+    case 'completed': return 'Selesai';
+   555→+    case 'running': return 'Diproses';
+   556→+    case 'queued': return 'Antrian';
+   557→+    case 'pending': return 'Menunggu';
+   558→+    case 'failed': return 'Gagal';
+   559→+    case 'skipped': return 'Dilewati';
+   560→+    default: return status;
+   561→+  }
+   562→+}
+   563→+
+   564→+export function StorylineColumn() {
+   565→+  const { scenes, selectedSceneId, selectScene, updateScene, currentProject } = useStoryboardStore();
+   566→+
+   567→+  const handleFieldChange = useCallback(
+   568→+    (sceneId: string, field: keyof SceneData, value: string | number | boolean) => {
+   569→+      updateScene(sceneId, { [field]: value });
+   570→+    },
+   571→+    [updateScene]
+   572→+  );
+   573→+
+   574→+  const handleToggleLock = useCallback(
+   575→+    async (sceneId: string, currentLocked: boolean, e: React.MouseEvent) => {
+   576→+      e.stopPropagation();
+   577→+      updateScene(sceneId, { locked: !currentLocked });
+   578→+      if (currentProject) {
+   579→+        try {
+   580→+          await fetch(`/api/storyboard/${currentProject.id}/scenes/${sceneId}`, {
+   581→+            method: 'PATCH',
+   582→+            headers: { 'Content-Type': 'application/json' },
+   583→+            body: JSON.stringify({ locked: !currentLocked }),
+   584→+          });
+   585→+        } catch {}
+   586→+      }
+   587→+    },
+   588→+    [updateScene, currentProject]
+   589→+  );
+   590→+
+   591→+  return (
+   592→+    <div className="p-3 space-y-0">
+   593→+      {scenes.map((scene, index) => {
+   594→+        const isSelected = scene.scene_id === selectedSceneId;
+   595→+
+   596→+        return (
+   597→+          <div
+   598→+            key={scene.scene_id}
+   599→+            className={`relative pl-10 pb-6 ${index < scenes.length - 1 ? '' : ''}`}
+   600→+            onClick={() => selectScene(scene.scene_id)}
+   601→+          >
+   602→+            {/* Timeline dot & line */}
+   603→+            <div className="absolute left-0 top-0 bottom-0 flex flex-col items-center">
+   604→+              <div
+   605→+                className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 z-10 ${
+   606→+                  isSelected
+   607→+                    ? 'bg-violet-600 text-white'
+   608→+                    : 'bg-violet-100 text-violet-700 dark:bg-violet-900/50 dark:text-violet-300'
+   609→+                }`}
+   610→+              >
+   611→+                {String(scene.scene_number).padStart(2, '0')}
+   612→+              </div>
+   613→+              {index < scenes.length - 1 && (
+   614→+                <div className="w-px flex-1 bg-violet-200 dark:bg-violet-800/50 mt-1" />
+   615→+              )}
+   616→+            </div>
+   617→+
+   618→+            {/* Card */}
+   619→+            <div
+   620→+              className={`rounded-xl border p-3 space-y-2.5 transition-all cursor-pointer ${
+   621→+                isSelected
+   622→+                  ? 'border-violet-300 bg-violet-50/50 shadow-sm dark:border-violet-700 dark:bg-violet-950/20'
+   623→+                  : 'border-border bg-card hover:border-violet-200 dark:hover:border-violet-800'
+   624→+              } ${scene.locked ? 'opacity-75' : ''}`}
+   625→+            >
+   626→+              {/* Card Header */}
+   627→+              <div className="flex items-start justify-between gap-2">
+   628→+                <div className="flex-1 min-w-0">
+   629→+                  <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+   630→+                    Judul Scene
+   631→+                  </p>
+   632→+                  <p className="text-sm font-semibold truncate">
+   633→+                    {scene.vo.length > 40 ? scene.vo.slice(0, 40) + '...' : scene.vo}
+   634→+                  </p>
+   635→+                </div>
+   636→+                <Button
+   637→+                  variant="ghost"
+   638→+                  size="sm"
+   639→+                  className="h-6 w-6 p-0 shrink-0"
+   640→+                  onClick={(e) => handleToggleLock(scene.scene_id, scene.locked, e)}
+   641→+                >
+   642→+                  {scene.locked ? (
+   643→+                    <Lock className="h-3 w-3 text-amber-500" />
+   644→+                  ) : (
+   645→+                    <Unlock className="h-3 w-3 text-muted-foreground" />
+   646→+                  )}
+   647→+                </Button>
+   648→+              </div>
+   649→+
+   650→+              {/* Deskripsi / VO */}
+   651→+              <div className="space-y-1">
+   652→+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+   653→+                  VO / Narasi
+   654→+                </p>
+   655→+                <Textarea
+   656→+                  value={scene.vo}
+   657→+                  onChange={(e) => handleFieldChange(scene.scene_id, 'vo', e.target.value)}
+   658→+                  className="min-h-[48px] text-xs resize-none"
+   659→+                  style={{ fieldSizing: 'fixed' }}
+   660→+                />
+   661→+              </div>
+   662→+
+   663→+              {/* Status */}
+   664→+              <div className="space-y-1">
+   665→+                <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+   666→+                  Status
+   667→+                </p>
+   668→+                <div className="flex items-center gap-1.5">
+   669→+                  <SceneStatusBadge
+   670→+                    status={scene.image_status}
+   671→+                    label={`IMG: ${getStatusLabel(scene.image_status, 'img')}`}
+   672→+                  />
+   673→+                  <SceneStatusBadge
+   674→+                    status={scene.video_status}
+   675→+                    label={`VID: ${getStatusLabel(scene.video_status, 'vid')}`}
+   676→+                  />
+   677→+                </div>
+   678→+              </div>
+   679→+
+   680→+              {/* Duration */}
+   681→+              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+   682→+                <span>Durasi: {scene.duration}s</span>
+   683→+              </div>
+   684→+            </div>
+   685→+          </div>
+   686→+        );
+   687→+      })}
+   688→+    </div>
+   689→+  );
+   690→+}
+   691→diff --git a/src/components/storyboard/TopToolbar.tsx b/src/components/storyboard/TopToolbar.tsx
+   692→index 59f77b9..1119e73 100644
+   693→--- a/src/components/storyboard/TopToolbar.tsx
+   694→+++ b/src/components/storyboard/TopToolbar.tsx
+   695→@@ -13,7 +13,6 @@ import {
+   696→   Square,
+   697→   RotateCcw,
+   698→   Loader2,
+   699→-  Clapperboard,
+   700→   FolderOpen,
+   701→ } from 'lucide-react';
+   702→ import { Button } from '@/components/ui/button';
+   703→@@ -25,7 +24,6 @@ import {
+   704→   SelectValue,
+   705→ } from '@/components/ui/select';
+   706→ import { Separator } from '@/components/ui/separator';
+   707→-import { Input } from '@/components/ui/input';
+   708→ import { useStoryboardStore } from '@/lib/store/storyboard-store';
+   709→ import { JobProgress as JobProgressComponent } from './JobProgress';
+   710→ import { toast } from 'sonner';
+   711→@@ -33,7 +31,6 @@ import { toast } from 'sonner';
+   712→ export function TopToolbar() {
+   713→   const {
+   714→     currentProject,
+   715→-    scenes,
+   716→     activeJob,
+   717→     setLoadJsonDialogOpen,
+   718→     setProviderSettingsDialogOpen,
+   719→@@ -41,34 +38,12 @@ export function TopToolbar() {
+   720→     loadProject,
+   721→   } = useStoryboardStore();
+   722→ 
+   723→-  const [saving, setSaving] = useState(false);
+   724→-  const [exporting, setExporting] = useState(false);
+   725→   const [generating, setGenerating] = useState<string | null>(null);
+   726→ 
+   727→   const isJobRunning = activeJob?.status === 'running' || activeJob?.status === 'queued';
+   728→ 
+   729→-  const handleSave = useCallback(async () => {
+   730→-    if (!currentProject) return;
+   731→-    setSaving(true);
+   732→-    try {
+   733→-      // Refresh project data from server
+   734→-      const res = await fetch(`/api/storyboard/${currentProject.id}`);
+   735→-      const data = await res.json();
+   736→-      if (data.ok) {
+   737→-        toast.success('Project data refreshed');
+   738→-      } else {
+   739→-        toast.error('Failed to save project');
+   740→-      }
+   741→-    } catch {
+   742→-      toast.error('Failed to save project');
+   743→-    } finally {
+   744→-      setSaving(false);
+   745→-    }
+   746→-  }, [currentProject]);
+   747→-
+   748→   const handleExport = useCallback(async () => {
+   749→     if (!currentProject) return;
+   750→-    setExporting(true);
+   751→     try {
+   752→       const res = await fetch(`/api/storyboard/${currentProject.id}/export`);
+   753→       const data = await res.json();
+   754→@@ -80,14 +55,12 @@ export function TopToolbar() {
+   755→         a.download = `${currentProject.title || 'storyboard'}_final.json`;
+   756→         a.click();
+   757→         URL.revokeObjectURL(url);
+   758→-        toast.success('JSON exported');
+   759→+        toast.success('JSON diekspor');
+   760→       } else {
+   761→-        toast.error(data.error || 'Export failed');
+   762→+        toast.error(data.error || 'Ekspor gagal');
+   763→       }
+   764→     } catch {
+   765→-      toast.error('Export failed');
+   766→-    } finally {
+   767→-      setExporting(false);
+   768→+      toast.error('Ekspor gagal');
+   769→     }
+   770→   }, [currentProject]);
+   771→ 
+   772→@@ -107,7 +80,6 @@ export function TopToolbar() {
+   773→       });
+   774→       const data = await res.json();
+   775→       if (data.ok) {
+   776→-        // Set the active job so polling starts
+   777→         setActiveJob({
+   778→           job_id: data.job_id,
+   779→           status: 'running',
+   780→@@ -120,12 +92,12 @@ export function TopToolbar() {
+   781→           },
+   782→           updated_scenes: [],
+   783→         });
+   784→-        toast.success(`Generation job started (${mode})`);
+   785→+        toast.success(`Generate dimulai (${mode})`);
+   786→       } else {
+   787→-        toast.error(data.error || 'Failed to start generation');
+   788→+        toast.error(data.error || 'Gagal memulai generate');
+   789→       }
+   790→     } catch {
+   791→-      toast.error('Failed to start generation');
+   792→+      toast.error('Gagal memulai generate');
+   793→     } finally {
+   794→       setGenerating(null);
+   795→     }
+   796→@@ -139,41 +111,19 @@ export function TopToolbar() {
+   797→       });
+   798→       const data = await res.json();
+   799→       if (data.ok) {
+   800→-        toast.success(`Job ${action} successful`);
+   801→-        // Update job status locally
+   802→+        toast.success(`Job ${action} berhasil`);
+   803→         setActiveJob({
+   804→           ...activeJob,
+   805→           status: action === 'pause' ? 'paused' : action === 'resume' ? 'running' : 'stopped',
+   806→         });
+   807→       } else {
+   808→-        toast.error(data.error || `Failed to ${action} job`);
+   809→+        toast.error(data.error || `Gagal ${action} job`);
+   810→       }
+   811→     } catch {
+   812→-      toast.error(`Failed to ${action} job`);
+   813→+      toast.error(`Gagal ${action} job`);
+   814→     }
+   815→   }, [activeJob, setActiveJob]);
+   816→ 
+   817→-  const handleDownloadZip = useCallback(async (type: 'images' | 'videos' | 'project') => {
+   818→-    if (!currentProject) return;
+   819→-    try {
+   820→-      const res = await fetch(`/api/storyboard/${currentProject.id}/download?type=${type}`);
+   821→-      if (res.ok) {
+   822→-        const blob = await res.blob();
+   823→-        const url = URL.createObjectURL(blob);
+   824→-        const a = document.createElement('a');
+   825→-        a.href = url;
+   826→-        a.download = `${currentProject.title || 'storyboard'}_${type}.zip`;
+   827→-        a.click();
+   828→-        URL.revokeObjectURL(url);
+   829→-      } else {
+   830→-        const data = await res.json();
+   831→-        toast.error(data.error || 'Download failed');
+   832→-      }
+   833→-    } catch {
+   834→-      toast.error('Download failed');
+   835→-    }
+   836→-  }, [currentProject]);
+   837→-
+   838→   const handleAspectRatioChange = useCallback(async (value: string) => {
+   839→     if (!currentProject) return;
+   840→     try {
+   841→@@ -188,205 +138,155 @@ export function TopToolbar() {
+   842→           { ...currentProject, aspect_ratio: value },
+   843→           useStoryboardStore.getState().scenes
+   844→         );
+   845→-        toast.success('Aspect ratio updated');
+   846→+        toast.success('Aspect ratio diperbarui');
+   847→       }
+   848→     } catch {
+   849→-      toast.error('Failed to update aspect ratio');
+   850→+      toast.error('Gagal mengubah aspect ratio');
+   851→     }
+   852→   }, [currentProject, loadProject]);
+   853→ 
+   854→-  return (
+   855→-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+   856→-      <div className="flex h-14 items-center gap-2 px-4">
+   857→-        {/* Logo & Title */}
+   858→-        <div className="flex items-center gap-2 min-w-0">
+   859→-          <Clapperboard className="h-6 w-6 text-emerald-600 shrink-0" />
+   860→-          <span className="font-bold text-sm hidden sm:inline whitespace-nowrap">
+   861→-            Kiwul Studio
+   862→-          </span>
+   863→-        </div>
+   864→-
+   865→-        <Separator orientation="vertical" className="h-6 mx-1" />
+   866→-
+   867→-        {currentProject ? (
+   868→-          <>
+   869→-            {/* Project Title */}
+   870→-            <Input
+   871→-              className="h-8 w-40 lg:w-56 text-sm font-medium border-transparent hover:border-input focus:border-input bg-transparent"
+   872→-              value={currentProject.title}
+   873→-              onChange={() => {}}
+   874→-              placeholder="Project title"
+   875→-              readOnly
+   876→-            />
+   877→-
+   878→-            {/* Aspect Ratio */}
+   879→-            <Select
+   880→-              value={currentProject.aspect_ratio}
+   881→-              onValueChange={handleAspectRatioChange}
+   882→-            >
+   883→-              <SelectTrigger className="h-8 w-28 text-xs">
+   884→-                <SelectValue />
+   885→-              </SelectTrigger>
+   886→-              <SelectContent>
+   887→-                <SelectItem value="9:16">9:16</SelectItem>
+   888→-                <SelectItem value="16:9">16:9</SelectItem>
+   889→-              </SelectContent>
+   890→-            </Select>
+   891→-
+   892→-            <Separator orientation="vertical" className="h-6 mx-1" />
+   893→-
+   894→-            {/* Action Buttons */}
+   895→-            <div className="flex items-center gap-1 overflow-x-auto">
+   896→-              <Button
+   897→-                variant="ghost"
+   898→-                size="sm"
+   899→-                className="h-8 text-xs gap-1"
+   900→-                onClick={() => setLoadJsonDialogOpen(true)}
+   901→-              >
+   902→-                <FolderOpen className="h-3.5 w-3.5" />
+   903→-                <span className="hidden md:inline">Load</span>
+   904→-              </Button>
+   905→-
+   906→-              <Button
+   907→-                variant="ghost"
+   908→-                size="sm"
+   909→-                className="h-8 text-xs gap-1"
+   910→-                onClick={handleSave}
+   911→-                disabled={saving}
+   912→-              >
+   913→-                {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+   914→-                <span className="hidden md:inline">Save</span>
+   915→-              </Button>
+   916→-
+   917→-              <Button
+   918→-                variant="ghost"
+   919→-                size="sm"
+   920→-                className="h-8 text-xs gap-1"
+   921→-                onClick={handleExport}
+   922→-                disabled={exporting}
+   923→-              >
+   924→-                {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+   925→-                <span className="hidden md:inline">Export</span>
+   926→-              </Button>
+   927→-
+   928→-              <Button
+   929→-                variant="ghost"
+   930→-                size="sm"
+   931→-                className="h-8 text-xs gap-1"
+   932→-                onClick={() => setProviderSettingsDialogOpen(true)}
+   933→-              >
+   934→-                <Settings className="h-3.5 w-3.5" />
+   935→-                <span className="hidden lg:inline">Providers</span>
+   936→-              </Button>
+   937→-            </div>
+   938→-
+   939→-            <Separator orientation="vertical" className="h-6 mx-1" />
+   940→+  const handleDownloadZip = useCallback(async (type: 'images' | 'videos' | 'project') => {
+   941→+    if (!currentProject) return;
+   942→+    try {
+   943→+      const res = await fetch(`/api/storyboard/${currentProject.id}/download?type=${type}`);
+   944→+      if (res.ok) {
+   945→+        const blob = await res.blob();
+   946→+        const url = URL.createObjectURL(blob);
+   947→+        const a = document.createElement('a');
+   948→+        a.href = url;
+   949→+        a.download = `${currentProject.title || 'storyboard'}_${type}.zip`;
+   950→+        a.click();
+   951→+        URL.revokeObjectURL(url);
+   952→+      } else {
+   953→+        const data = await res.json();
+   954→+        toast.error(data.error || 'Unduhan gagal');
+   955→+      }
+   956→+    } catch {
+   957→+      toast.error('Unduhan gagal');
+   958→+    }
+   959→+  }, [currentProject]);
+   960→ 
+   961→-            {/* Generate Buttons */}
+   962→-            <div className="flex items-center gap-1">
+   963→-              <Button
+   964→-                variant="outline"
+   965→-                size="sm"
+   966→-                className="h-8 text-xs gap-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+   967→-                onClick={() => handleGenerate('image')}
+   968→-                disabled={isJobRunning || !!generating}
+   969→-              >
+   970→-                {generating === 'image' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImageIcon className="h-3.5 w-3.5" />}
+   971→-                <span className="hidden lg:inline">Images</span>
+   972→-              </Button>
+   973→+  if (!currentProject) return null;
+   974→ 
+   975→-              <Button
+   976→-                variant="outline"
+   977→-                size="sm"
+   978→-                className="h-8 text-xs gap-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+   979→-                onClick={() => handleGenerate('video')}
+   980→-                disabled={isJobRunning || !!generating}
+   981→-              >
+   982→-                {generating === 'video' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Video className="h-3.5 w-3.5" />}
+   983→-                <span className="hidden lg:inline">Videos</span>
+   984→-              </Button>
+   985→+  return (
+   986→+    <>
+   987→+      <div className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] overflow-x-auto">
+   988→+        {/* Aspect Ratio */}
+   989→+        <Select
+   990→+          value={currentProject.aspect_ratio}
+   991→+          onValueChange={handleAspectRatioChange}
+   992→+        >
+   993→+          <SelectTrigger className="h-6 w-20 text-[10px] border-0 bg-muted/50">
+   994→+            <SelectValue />
+   995→+          </SelectTrigger>
+   996→+          <SelectContent>
+   997→+            <SelectItem value="9:16">9:16</SelectItem>
+   998→+            <SelectItem value="16:9">16:9</SelectItem>
+   999→+          </SelectContent>
+  1000→+        </Select>
+  1001→ 
+  1002→-              <Button
+  1003→-                variant="outline"
+  1004→-                size="sm"
+  1005→-                className="h-8 text-xs gap-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+  1006→-                onClick={() => handleGenerate('image_and_video')}
+  1007→-                disabled={isJobRunning || !!generating}
+  1008→-              >
+  1009→-                {generating === 'image_and_video' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+  1010→-                <span className="hidden lg:inline">All</span>
+  1011→-              </Button>
+  1012→+        <Separator orientation="vertical" className="h-4 mx-1" />
+  1013→ 
+  1014→-              <Button
+  1015→-                variant="outline"
+  1016→-                size="sm"
+  1017→-                className="h-8 text-xs gap-1"
+  1018→-                onClick={() => handleGenerate('failed_only')}
+  1019→-                disabled={isJobRunning || !!generating}
+  1020→-              >
+  1021→-                {generating === 'failed_only' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
+  1022→-                <span className="hidden xl:inline">Failed</span>
+  1023→-              </Button>
+  1024→-            </div>
+  1025→+        {/* Generate Buttons */}
+  1026→+        <Button
+  1027→+          variant="ghost"
+  1028→+          size="sm"
+  1029→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1030→+          onClick={() => handleGenerate('image')}
+  1031→+          disabled={isJobRunning || !!generating}
+  1032→+        >
+  1033→+          {generating === 'image' ? <Loader2 className="h-3 w-3 animate-spin" /> : <ImageIcon className="h-3 w-3" />}
+  1034→+          Images
+  1035→+        </Button>
+  1036→+        <Button
+  1037→+          variant="ghost"
+  1038→+          size="sm"
+  1039→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1040→+          onClick={() => handleGenerate('video')}
+  1041→+          disabled={isJobRunning || !!generating}
+  1042→+        >
+  1043→+          {generating === 'video' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Video className="h-3 w-3" />}
+  1044→+          Videos
+  1045→+        </Button>
+  1046→+        <Button
+  1047→+          variant="ghost"
+  1048→+          size="sm"
+  1049→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1050→+          onClick={() => handleGenerate('failed_only')}
+  1051→+          disabled={isJobRunning || !!generating}
+  1052→+        >
+  1053→+          {generating === 'failed_only' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RotateCcw className="h-3 w-3" />}
+  1054→+          Failed
+  1055→+        </Button>
+  1056→ 
+  1057→-            {/* Job Controls */}
+  1058→-            {isJobRunning && (
+  1059→-              <>
+  1060→-                <Separator orientation="vertical" className="h-6 mx-1" />
+  1061→-                <div className="flex items-center gap-1">
+  1062→-                  <Button
+  1063→-                    variant="ghost"
+  1064→-                    size="sm"
+  1065→-                    className="h-8 text-xs gap-1 text-amber-600"
+  1066→-                    onClick={() => handleJobControl(activeJob?.status === 'paused' ? 'resume' : 'pause')}
+  1067→-                  >
+  1068→-                    {activeJob?.status === 'paused' ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+  1069→-                    <span className="hidden md:inline">{activeJob?.status === 'paused' ? 'Resume' : 'Pause'}</span>
+  1070→-                  </Button>
+  1071→-                  <Button
+  1072→-                    variant="ghost"
+  1073→-                    size="sm"
+  1074→-                    className="h-8 text-xs gap-1 text-red-600"
+  1075→-                    onClick={() => handleJobControl('stop')}
+  1076→-                  >
+  1077→-                    <Square className="h-3.5 w-3.5" />
+  1078→-                    <span className="hidden md:inline">Stop</span>
+  1079→-                  </Button>
+  1080→-                </div>
+  1081→-              </>
+  1082→-            )}
+  1083→+        <Separator orientation="vertical" className="h-4 mx-1" />
+  1084→ 
+  1085→-            {/* Download ZIP */}
+  1086→-            <div className="ml-auto flex items-center gap-1">
+  1087→-              <Button
+  1088→-                variant="ghost"
+  1089→-                size="sm"
+  1090→-                className="h-8 text-xs gap-1"
+  1091→-                onClick={() => handleDownloadZip('project')}
+  1092→-              >
+  1093→-                <Upload className="h-3.5 w-3.5" />
+  1094→-                <span className="hidden md:inline">ZIP</span>
+  1095→-              </Button>
+  1096→-            </div>
+  1097→-          </>
+  1098→-        ) : (
+  1099→-          <div className="flex items-center gap-2">
+  1100→+        {/* Job Controls */}
+  1101→+        {isJobRunning && (
+  1102→+          <>
+  1103→+            <Button
+  1104→+              variant="ghost"
+  1105→+              size="sm"
+  1106→+              className="h-6 text-[10px] gap-1 px-1.5 text-amber-600"
+  1107→+              onClick={() => handleJobControl(activeJob?.status === 'paused' ? 'resume' : 'pause')}
+  1108→+            >
+  1109→+              {activeJob?.status === 'paused' ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+  1110→+              {activeJob?.status === 'paused' ? 'Lanjut' : 'Jeda'}
+  1111→+            </Button>
+  1112→             <Button
+  1113→-              variant="outline"
+  1114→+              variant="ghost"
+  1115→               size="sm"
+  1116→-              className="h-8 text-xs gap-1 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-950"
+  1117→-              onClick={() => setLoadJsonDialogOpen(true)}
+  1118→+              className="h-6 text-[10px] gap-1 px-1.5 text-red-600"
+  1119→+              onClick={() => handleJobControl('stop')}
+  1120→             >
+  1121→-              <Upload className="h-3.5 w-3.5" />
+  1122→-              Load JSON
+  1123→+              <Square className="h-3 w-3" />
+  1124→+              Stop
+  1125→             </Button>
+  1126→-            <span className="text-sm text-muted-foreground">No project loaded</span>
+  1127→-          </div>
+  1128→+            <Separator orientation="vertical" className="h-4 mx-1" />
+  1129→+          </>
+  1130→         )}
+  1131→+
+  1132→+        {/* Utility Buttons */}
+  1133→+        <Button
+  1134→+          variant="ghost"
+  1135→+          size="sm"
+  1136→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1137→+          onClick={() => setLoadJsonDialogOpen(true)}
+  1138→+        >
+  1139→+          <FolderOpen className="h-3 w-3" />
+  1140→+          Load
+  1141→+        </Button>
+  1142→+        <Button
+  1143→+          variant="ghost"
+  1144→+          size="sm"
+  1145→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1146→+          onClick={handleExport}
+  1147→+        >
+  1148→+          <Download className="h-3 w-3" />
+  1149→+          Export
+  1150→+        </Button>
+  1151→+        <Button
+  1152→+          variant="ghost"
+  1153→+          size="sm"
+  1154→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1155→+          onClick={() => handleDownloadZip('project')}
+  1156→+        >
+  1157→+          <Upload className="h-3 w-3" />
+  1158→+          ZIP
+  1159→+        </Button>
+  1160→+        <Button
+  1161→+          variant="ghost"
+  1162→+          size="sm"
+  1163→+          className="h-6 text-[10px] gap-1 px-1.5"
+  1164→+          onClick={() => setProviderSettingsDialogOpen(true)}
+  1165→+        >
+  1166→+          <Settings className="h-3 w-3" />
+  1167→+          Providers
+  1168→+        </Button>
+  1169→       </div>
+  1170→ 
+  1171→       {/* Job Progress Bar */}
+  1172→       {activeJob && <JobProgressComponent />}
+  1173→-    </header>
+  1174→+    </>
+  1175→   );
+  1176→ }
+  1177→diff --git a/src/components/storyboard/VideoColumn.tsx b/src/components/storyboard/VideoColumn.tsx
+  1178→new file mode 100644
+  1179→index 0000000..c67f362
+  1180→--- /dev/null
+  1181→+++ b/src/components/storyboard/VideoColumn.tsx
+  1182→@@ -0,0 +1,214 @@
+  1183→+'use client';
+  1184→+
+  1185→+import { useCallback, useState } from 'react';
+  1186→+import {
+  1187→+  Download,
+  1188→+  Film,
+  1189→+  Loader2,
+  1190→+  Play,
+  1191→+  MoreHorizontal,
+  1192→+} from 'lucide-react';
+  1193→+import { Button } from '@/components/ui/button';
+  1194→+import { AspectRatio } from '@/components/ui/aspect-ratio';
+  1195→+import { useStoryboardStore } from '@/lib/store/storyboard-store';
+  1196→+import { toast } from 'sonner';
+  1197→+
+  1198→+export function VideoColumn() {
+  1199→+  const { scenes, currentProject, updateScene } = useStoryboardStore();
+  1200→+  const [generating, setGenerating] = useState<string | null>(null);
+  1201→+
+  1202→+  const aspectRatio = currentProject?.aspect_ratio === '16:9' ? 16 / 9 : 9 / 16;
+  1203→+
+  1204→+  const handleGenerateVideo = useCallback(
+  1205→+    async (sceneId: string) => {
+  1206→+      if (!currentProject) return;
+  1207→+      setGenerating(sceneId);
+  1208→+      updateScene(sceneId, { video_status: 'running', error_message: null });
+  1209→+      try {
+  1210→+        const res = await fetch(
+  1211→+          `/api/storyboard/${currentProject.id}/scenes/${sceneId}/video`,
+  1212→+          { method: 'POST' }
+  1213→+        );
+  1214→+        const data = await res.json();
+  1215→+        if (data.ok) {
+  1216→+          updateScene(sceneId, {
+  1217→+            video_status: 'completed',
+  1218→+            video_path: data.video_path,
+  1219→+            error_message: null,
+  1220→+          });
+  1221→+          toast.success('Video berhasil dibuat');
+  1222→+        } else {
+  1223→+          updateScene(sceneId, {
+  1224→+            video_status: 'failed',
+  1225→+            error_message: data.error || 'Gagal membuat video',
+  1226→+          });
+  1227→+          toast.error(data.error || 'Gagal membuat video');
+  1228→+        }
+  1229→+      } catch (err) {
+  1230→+        updateScene(sceneId, {
+  1231→+          video_status: 'failed',
+  1232→+          error_message: err instanceof Error ? err.message : 'Unknown error',
+  1233→+        });
+  1234→+        toast.error('Gagal membuat video');
+  1235→+      } finally {
+  1236→+        setGenerating(null);
+  1237→+      }
+  1238→+    },
+  1239→+    [currentProject, updateScene]
+  1240→+  );
+  1241→+
+  1242→+  const handleDownloadVideo = useCallback(
+  1243→+    async (sceneId: string, sceneNumber: number) => {
+  1244→+      if (!currentProject) return;
+  1245→+      try {
+  1246→+        const res = await fetch(
+  1247→+          `/api/storyboard/${currentProject.id}/scenes/${sceneId}/download/video`
+  1248→+        );
+  1249→+        if (res.ok) {
+  1250→+          const blob = await res.blob();
+  1251→+          const url = URL.createObjectURL(blob);
+  1252→+          const a = document.createElement('a');
+  1253→+          a.href = url;
+  1254→+          a.download = `scene_${sceneNumber}_video.mp4`;
+  1255→+          a.click();
+  1256→+          URL.revokeObjectURL(url);
+  1257→+        } else {
+  1258→+          toast.error('Gagal mengunduh video');
+  1259→+        }
+  1260→+      } catch {
+  1261→+        toast.error('Gagal mengunduh video');
+  1262→+      }
+  1263→+    },
+  1264→+    [currentProject]
+  1265→+  );
+  1266→+
+  1267→+  return (
+  1268→+    <div className="p-3 space-y-4">
+  1269→+      {scenes.map((scene) => {
+  1270→+        const videoUrl = scene.video_path
+  1271→+          ? `/api/storyboard/${currentProject?.id}/scenes/${scene.scene_id}/download/video`
+  1272→+          : null;
+  1273→+        const isGenerating = generating === scene.scene_id;
+  1274→+
+  1275→+        return (
+  1276→+          <div
+  1277→+            key={scene.scene_id}
+  1278→+            className="rounded-xl border border-border bg-card p-3 space-y-2.5"
+  1279→+          >
+  1280→+            {/* Scene Number Label */}
+  1281→+            <div className="flex items-center justify-between">
+  1282→+              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+  1283→+                Scene #{String(scene.scene_number).padStart(2, '0')}
+  1284→+              </span>
+  1285→+              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+  1286→+                <MoreHorizontal className="h-3 w-3" />
+  1287→+              </Button>
+  1288→+            </div>
+  1289→+
+  1290→+            {/* Video Preview */}
+  1291→+            <div className="rounded-lg border bg-muted/30 overflow-hidden">
+  1292→+              <AspectRatio ratio={aspectRatio} className="bg-black/5 dark:bg-white/5">
+  1293→+                {videoUrl ? (
+  1294→+                  <video
+  1295→+                    src={videoUrl}
+  1296→+                    controls
+  1297→+                    className="w-full h-full object-contain"
+  1298→+                    preload="metadata"
+  1299→+                  />
+  1300→+                ) : (
+  1301→+                  <div className="w-full h-full flex items-center justify-center">
+  1302→+                    <div className="text-center">
+  1303→+                      {isGenerating ? (
+  1304→+                        <Loader2 className="h-8 w-8 mx-auto text-blue-500/50 animate-spin" />
+  1305→+                      ) : scene.image_status !== 'completed' ? (
+  1306→+                        <Film className="h-8 w-8 mx-auto text-muted-foreground/30" />
+  1307→+                      ) : (
+  1308→+                        <div className="h-10 w-10 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center">
+  1309→+                          <Play className="h-4 w-4 text-blue-500 ml-0.5" />
+  1310→+                        </div>
+  1311→+                      )}
+  1312→+                      <p className="text-[10px] text-muted-foreground mt-1">
+  1313→+                        {scene.video_status === 'pending'
+  1314→+                          ? scene.image_status !== 'completed'
+  1315→+                            ? 'Buat gambar dulu'
+  1316→+                            : 'Belum Dibuat'
+  1317→+                          : scene.video_status === 'running'
+  1318→+                          ? 'Memproses...'
+  1319→+                          : scene.video_status === 'failed'
+  1320→+                          ? 'Gagal'
+  1321→+                          : 'Tidak ada video'}
+  1322→+                      </p>
+  1323→+                    </div>
+  1324→+                  </div>
+  1325→+                )}
+  1326→+              </AspectRatio>
+  1327→+            </div>
+  1328→+
+  1329→+            {/* Prompt Motion */}
+  1330→+            <div className="space-y-1">
+  1331→+              <p className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+  1332→+                Prompt Motion
+  1333→+              </p>
+  1334→+              <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+  1335→+                {scene.video_prompt}
+  1336→+              </p>
+  1337→+            </div>
+  1338→+
+  1339→+            {/* Duration */}
+  1340→+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+  1341→+              <Film className="h-3 w-3" />
+  1342→+              <span>{scene.duration} detik</span>
+  1343→+            </div>
+  1344→+
+  1345→+            {/* Action Buttons */}
+  1346→+            <div className="flex items-center gap-2">
+  1347→+              {!videoUrl ? (
+  1348→+                <Button
+  1349→+                  variant="outline"
+  1350→+                  size="sm"
+  1351→+                  className="h-7 text-[10px] gap-1 flex-1 border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950"
+  1352→+                  onClick={() => handleGenerateVideo(scene.scene_id)}
+  1353→+                  disabled={isGenerating || scene.locked || scene.image_status !== 'completed'}
+  1354→+                >
+  1355→+                  {isGenerating ? (
+  1356→+                    <Loader2 className="h-3 w-3 animate-spin" />
+  1357→+                  ) : (
+  1358→+                    <Play className="h-3 w-3" />
+  1359→+                  )}
+  1360→+                  Generate Video
+  1361→+                </Button>
+  1362→+              ) : (
+  1363→+                <>
+  1364→+                  <Button
+  1365→+                    variant="outline"
+  1366→+                    size="sm"
+  1367→+                    className="h-7 text-[10px] gap-1 flex-1"
+  1368→+                    onClick={() => handleGenerateVideo(scene.scene_id)}
+  1369→+                    disabled={isGenerating || scene.locked}
+  1370→+                  >
+  1371→+                    {isGenerating ? (
+  1372→+                      <Loader2 className="h-3 w-3 animate-spin" />
+  1373→+                    ) : (
+  1374→+                      <Play className="h-3 w-3" />
+  1375→+                    )}
+  1376→+                    Regenerate
+  1377→+                  </Button>
+  1378→+                  <Button
+  1379→+                    variant="outline"
+  1380→+                    size="sm"
+  1381→+                    className="h-7 text-[10px] gap-1 flex-1"
+  1382→+                    onClick={() => handleDownloadVideo(scene.scene_id, scene.scene_number)}
+  1383→+                    disabled={!videoUrl}
+  1384→+                  >
+  1385→+                    <Download className="h-3 w-3" />
+  1386→+                    Download
+  1387→+                  </Button>
+  1388→+                </>
+  1389→+              )}
+  1390→+            </div>
+  1391→+          </div>
+  1392→+        );
+  1393→+      })}
+  1394→+    </div>
+  1395→+  );
+  1396→+}
+  1397→diff --git a/upload/ChatGPT Image Jun 16, 2026, 01_56_51 AM.png b/upload/ChatGPT Image Jun 16, 2026, 01_56_51 AM.png
+  1398→new file mode 100755
+  1399→index 0000000000000000000000000000000000000000..457ccb66c3ac9cf413c602a01490e39702952a7f
+  1400→GIT binary patch
+  1401→literal 1747847
+  1402→zcmV(@K-RyBP)<h;3K|Lk000e1NJLTq00ij(00V3Y1^@s64txBU00001b5ch_0Itp)
+  1403→z=>Px#1ZP1_K>z@;j|==^1poj532;bRa{vGi!vFvd!vV){sAK>D|D{PpK~#8Ny!{8f
+  1404→zZC6!2j?dTodwF^3p@q;w2`%)lbdb=bmrxW0DbmCsB?MH!FBY(114Ix(5D}4Xs0v7v
+  1405→z-XRdulh^xw??1+vbFMYlKIcBd_xt<&$31(kS;m~J?tRYL_uO-rEMI%<VOwGahoerw
+  1406→zDbry)eE6^}UB1j#u3T*^SFM6)i5)z!-xdxYv_ppuiH8z(<S2O&ExzXhC^nuv4w%Sw
+  1407→z1MH+wE^(6Q*$BlIq@75gY83LJ@CQsmj*6V5ItN7<RLvlWGZ^j4Q*%s0T=lYXAZWUp
+  1408→zp`)5wDhRS?k#){_BLeb8o%ZUlNN$0s!Ov#e=pv_c7D<Zr_u32BoZHF_T_i;|Cn4JL
+  1409→zd5(<DPfU{(=V5Y-zfx-s+N(}^nl|8OFI!*OjsSa;0g14QL%G*E9%U&ZGS_n`1ZSh9
+  1410→zAdU>Zc0vd3vW4Ies1!<@nj_Y*r;SKH>`R6<CDJMP7zeql)sZ0{P*eR}fIQNm;nDg<
+  1411→zc-juiHK@vUJk1Val4A%-Um6Q<K9Udts3a|R-T-YlQRmz)$vs6mY9Vtb(w?Z!DkpD9
+  1412→z1~g7w--*6a=H_ryaa2x~ftgdIBDr*gtSX4AYS0nd5h}OjRGq%5y;p*0y%=$Xb!<37
+  1413→zJHj+=`f8h)|5;j1GOr(V5+|*;k+gZfMA~SS9R@z)gpi4QM7$tJ)$&L$@d1}mripdZ
+  1414→zSfoq#Y>NevK`^A4peX|(D^hVP0x8#E%9WFt(?A6qtEQw+!z%K;QkB6qV3FXfKxvqC
+  1415→zlkgBP`!%f)Q<UAsp`Dr&@~}I>)84H7iW)mFC+oCF?OiL^qgM9>?X^K2N5wRx(kM^b
+  1416→z6sDX+<urt`U8l2#z2&BmcCQ>^PhRt-VLs$dN?ePk&(k9(>I68gDGKxthF%GoOuTSJ
+  1417→z&V21ZJRbwHkEQ`~&9u=fp}8rfBjs8PO$fkQlg(htFVM*msBMHfhTNti@$>8rAc)cn
+  1418→zz)31=0L6iyfWsfbq2P6+P5jNy4$2WwhpVB=1z}b-#Mj(WPmz4ql>>Q_szK901L|f^
+  1419→zA%au|Pp(Fs0G!6XD)@Q%Dk5jU{!M~X&9*Z)aaHmUm>0mri`jd1B(%#XxP3cJbJEF2
+  1420→z*rO7)wvn;)x08Z(1Q5gZ8Z(#N2y;|UqBi8{mgrd;24xC3=@KW~fq{>VgV5$8DXBDD
+  1421→zI>-+(QC!^_MkQvA1LJmzb2JLMgEQm~Azdj<=CjqAhjq;%IqZaVC)89;q)|#(a$OT8
+  1422→zMwqydh-qxakcWMMLAG>cFnuBBIFggp3F_L4qGHaqHh7&gx`io!fE$*qSa+O<N0RnL
+  1423→zqpC+OS+>+xu3Uv<r5(aV`^~vSeshj~QW=vWElnm)_+X~?N!WlGJ}}QaMRMmru9^b|
+  1424→zsgvH66h0j^j2x#Van>^n=M3!tEl&%Jc3P41wK!^vl_z_3CK@T6^Ekf%X4(v--26I0
+  1425→zVLf7d?pzX4J$J-TM4^*_h?}%gUq3mfNh*qcXlEwLY>I5S+3R`&un!^Al+9UKkzlw8
+  1426→z%0@#;fRivO-I`JfuAqCy1*1O(ERvyN$|n@VBAoL$i7~$iRlfU2){%PYp4k>>@<^QU
+  1427→zW;RgN6$<HbE+ujDyN|i3jM;t;7AlJ*>@AKYmr(jcP|i%;sk5k!ABmSJO?x#jsIKRn
+  1428→zPRwajrm%NrB@*tDwWKTJ&qt<I5S6PIJ@f>Mq81Gu8u`W1u0NCbMbf2t+=)YvC+HDl
+  1429→zy+{MZG~GajGyIJf{xKu8X`aE5?8Wzwmu{=$?NUKAhM=&LJIr3q&2SYl_VNE7%rnhV
+  1430→z_11G>9`_eOO(o2`1_z`Zp{*e>73XJ^tcx{J?G=kP3I5pIO6@HU44B;${>9oPda@CW
+  1431→zS<E-Zyw?zf;xoyFBbB}*b#5_u%wpF7w|c3kysOYe%_KBK^^`=DoYN*U>WEF#8N_M(
+  1432→z^WvtQBjYOdpaA@#frvXo_|&yni*xO%49#}t5t=Rhj;q3-+pp%VS&x(rAQhCW*2g2T
+  1433→z=xRg=c+^v==NPk8dt%y(I4l-vei8GcXl<s@5~R?3)mE>$N>Ga<U=Nq7LOU{A;;8?>
+  1434→zMQ=W@Fes-TEL}*>qTQBbQSX3}<ywCSbYx6hn0@Dz^^x-RnAv>407NbkN`|5)kqrjf
+  1435→zytSD&n}MX_9rDm#4a9^`Oew@biI~D0pW3(|=CspHAkXBRq7dXx&NOxo+Ia+I$EHop
+  1436→z$?@~j5;e_~uQ5;B5huGa?ZZ_-ze!gC3xC6vztvi~dbO=uwML(q+rNKrd}<EeQG?m4
+  1437→zrx}uklGk)rM_@P5n!H@-Bk@PfZjHpe9Ad*H>u@KhXQ4Dkb?>~>v$pTvkwdL=93EHm
+  1438→z&F9Uc_hp3VJ2DoVt!dk-H+wjhf6~bOjPo&sBJhZ@L2i90aMz?GM?j6A7d3xg7H_4q
+  1439→zOB_UTTYw8>%*#=s-!K<a7b$rgD&rh&$g4nHn0j0#Ic6>7_lPNyKQI=f&q>ZX9WLaJ
+  1440→z<Hj*$_BJgsU6&)Bf8FD(9yw;2*UrdZ9J9aqPi2~KJ~Sti7U9dxoZVlUYOS<SUsKyP
+  1441→zdc;ipRY4`z1V?~o8IO@3+EvIgrDPYb+M17Du8Qx$x(7UpWz93hFM`@$Vs5+hh>M{l
+  1442→zP(LEJr3hhWZ9`Aq=&mn}yHsbPqx-8UkX~&mPtv$~8oU_BUQA=t>+3c>mjf`QZT>Z8
+  1443→zifNlQD1ZqbUJ?Lmn}Kua#MIpS!~#lhb4-%b%vu9I2KJd8#GE`)52#6jBXR>n<`OV}
+  1444→z-#8}CbY==u0`<kxl{N=dz2uv>j-6VrwG^6TGMY>=Z8H(}y3ZD)(ji)MqZXfwo%T#n
+  1445→zPwMcolC?b7WY`P_$AmTH_N=m?n8`OWINOVo1t=QD;pCeSF_Ko3$)+UT9=wcM?3#BZ
+  1446→z{Cvu!v4U9(+0%@jHIJXjsado?a8%!7Q^`4)>&xKc%lWzr%i@SWh@LTF>qzaYCSAP!
+  1447→z);|?jEuY?-hRiy9Gp|>3ds-CvlQajS4#8Ie$Tv;d{%S0-=)z>A+nXEw^knG&e=+te
+  1448→zu~_dZ#R!TmQ7j?mIP0sFd6?%-+q50(^Z1;}>GOo!h<OqJcbFab1Z=92elA=1d40TU
+  1449→zS^i%zuZ3S^=6oL?={0=EEXT2Udp$?zk~ik27CAD>K<NH?aBAN}HUBR%iUD(t1TwBz
+  1450→zcdXhHhZjG!i2BeWTeftGt=+f*>QdXYXOAr$T(G6}3gKitdN=Fjw+R4RSlXyVo?R@5
+  1451→z=owUE#Gex~!>3qz>5?rj9Ca*5!kqRh{LgsU1o9<!(te-hK=FAu#=cB1>b0x&wcY%j
+  1452→zFs8lP#+i0^@Maw|Q%{6xSXUt(#MC!00g>%^<p6gYE|4_WQPBJtC-~EoCHIZ2%{9yM
+  1453→zrBs6Xh{0!bBkc%rL<>qG(lI9Lc_;aR<Pt3n1cgmvbD^-9%^fCHEG8id?!R`U5LKSy
+  1454→z^`=y&7pA$2e8e%;9NO4Jpf}P?i|5hWP5c?|NMTM65j}?k27fqOj)Ib=@2xPhqA5?*
+  1455→z<Weq}@>x`hdr@ZmT)!j2h3TIV2^m<@4eK|P3`pBFU5%qmf3*Rv58)f!IWLJS*ESd9
+  1456→z1co)wIHJa~9(;Y5h%)4z(+E-X{h}Be`+q}ARdUT+>v5M5!5OP@{VPaV)Hy+=&3486
+  1457→zg2(jSY=PN-s%lpn&_~h6SbT}*YUHRBuy=OyrzD`}o-?P5q9zZ_ba#U3T+FVQ<4Ae@
+  1458→zDWv9Ebk*l#vAzk_i6o2VnaM#zklFXPCa9-VDp&d!YalV@Ret)2Dvt_Kf+SwW#%r26
+  1459→z?Ne-&%B4I>oob~y(lQBH3^}o&AMrG8zIZM_66hxXDt5thgIxKUgGFn5f@%Ij)p-$q
+  1460→zPc`QGxhYeKuwlp<?1>%n7n1BKN}iNC&n||cggHP^JOH1>q9^K8-;kmzNhnbJ$zdHF
+  1461→zRxK1ladi|fi+Onlw1k1mVek+WO2!Oa9Mq@zh<Q9=v8y3zB~i^eFJS72p0w%`!r$s6
+  1462→zq7alYvMv^vjS4xo2{}$;oulcB++M}VYuLa8s8g=?d7Q*FuA=e;7-n*WVH!&eCmsQk
+  1463→zcwtA?7$J<;vE&0uq)s{P!`p;HCyJ}V!^6`E88t?5*8TYvsIJ-$?S<3$#F)-O|J2@W
+  1464→z^8yw@w8Qrn)7KHg^a&x?f>pYvoQh02Lz&ao98=A$HA)roF#ob+rcuuwM}r7}67+l&
+  1465→zLS{8&nAv~C3@gwQ_P!)duI}$Bc_e~E+RU|af)X~!gyLPy9J(Gr_D|9ci?+lL9X@2s
+  1466→zSFEu08#dX(!2`Bu_ip!S@RLjv<Yh=aAGKRtZ1blkgHjQ02b6lUWS(AeqXt@HuLjhl
+  1467→zC0{zK+fkAX?NwxyduGyB1LUTTVXD&PPItuA&0uO9P6R-H6w`TK44JR>BMlUqJVD7l
+  1468→z#8vyG{p8HHGeK;O8on5H00P?HivXT*ZjrP3>qQ~uzHc40)+Yi16xm%<ofOq=ap$0t
+  1469→zBSYrt0x(Sh-*DkzoqW}<^uC4=3(&g+A?1uGC^t^arjk{iD<Muul|dugdQa)CC@ylT
+  1470→zl=yiV+$~4TB7%>*H{QKrBgdshfEWbL{HC*HDlIySA@_}LYEGE+$iiaLPI&u-as{u&
+  1471→zvWAf1>}J}9RFXh6Lhq6C)uaj7>OOB`<<=PTQBBjx7?pf8ghq+^E|eOZM%EcX6xqe<
+  1472→zEO87hv2|ZI$^?Zni)tL3oDXtp4CSj5HwQIrUf*(Tee4BcYvTuoIg;I-Ng48#xFe$E
+  1473→z5whLd<JyTCIIp(NbE)-dQrAqf4RIk5GXWt)L&LcWmwS`b3a7Um6BIke5;mZQ&v6UR
+  1474→z@hpuqA!i<$YtjPG@Qb6y&EGSNLv$3P&f{mk>Vs|i{CdQum?H^OVs@B0U1}Jq(C~0h
+  1475→zGMzC^Da=Vm)6AR%Z^#HmI+VG&0q19wV==CK3YYntiG{z`nT^M}1c&TLSWLQFszC02
+  1476→znL?h34yBFfv9=b;kTXDA=%~uF4XoD9;&)7$qb1{7(?1WBb{c4}iHqM&m}?1>z?nR0
+  1477→z$V9-D1GMo5X8J#*=~vczjg>UXlW6%+Q_S{!z1&vO(u98=l*h%nnDK|=eVJ{sH#PN*
+  1478→z5HoYNViuwdZ8|8n@#7eBz!0w4yv^a5x5q>&yxG^3BYN9d$q4Q@)BU_{$crVapgO>r
+  1479→zX(c%`jyV7^y3q5^i<7gsQh;5q8q*RH;Xu_w+89UVv;LAc@Cgs9JS?iK(u<F$Uwe*8
+  1480→z4p2iY3dI3pp2G8dZe-CjE;6(!O^~VC(+LA@MCFHVe9m;GnJ{lNp%PHAmecc7OqY;>
+  1481→zM?%X%c+Qqb@WgXdb&}S<Epgf8ol?lmCKUzidQ!CUP9l2|=<_l~vgB9p8rPv`*V^wX
+  1482→z5T^YW>J;_5l~8L#2g2rJ6ZDTGYApYhb;Zh6wqfHY+q-v<?cKA-mMvQr-Vu4S)r(Qe
+  1483→zdD)fbBI@8tc2Po1w#PWK^DTEXcvT^frvXr;fk>O+wsFFoKhS{eYVwN9l}M5HKJEbf
+  1484→zJIRqyTuT_qRPxEcIU3}hHOnD$^(ncFta5XC<?T315Jas2{EZ=@CabXl4gzK}+^g0?
+  1485→zPE<=jS>~^`O39fk^~N7K1$5J#bzoo)bKBb|q{)pUa`=#^JoYQ{lyp9Z%AMs*Qgw*q
+  1486→z&OSpO!?Mjwk|B%b4~#RK$Tgd^8|q+X{xGOdSg`I-=e$k~S)7qHg+NJ4vA3v_vWT;2
+  1487→zdAwiZYL8Nyj6N#DbE0&i_zDT2R?i{#21iwy57MA$-|FFU^Io{M>!^zAud;Kp5+<qK
+  1488→zg|c$6=MQ5eyNLneA7aB^F~`(U?dmTKnJ;|PeLSX0t;U8t5*^uw0J*Gzbh#_1Al;Pb
+  1489→z=EfuP&2xKnAd?i+Ag9t2O)?H#V5Y$&RL8`YE}3h>5>v#w-*PVsX-2KJDlUO@Qq#}b
+  1490→zw;tiK118k=)WIB*(GzmA4JxSv<2mATgk=G6U$f4=4NG^yj6!v^RWPdc+z4bI3QcCd
+  1491→zP$v1vp{Y@cqKJ;7`s?|T|Ga=UpMoJ%LB{xVkXSI$+Ge4JHil!^2N|<CTFx?gu{`qm
+  1492→zTtM=NkbY$jH<5k^dKEE^Phlh#lq5C3uxL=A1vuLN16rFuCr5F&{e>ix%nopKUFpxz
+  1493→zVO~l#pzir9_uvu9fxn+GovY!MG*qfOz81`8$Y3BV6dW+^8JHZ{TQ=ELL>b7K#NZ^@
+  1494→zZ`Mid0j+B^P5PM_#uk`T2Tu5S1HjEN$TmsT&P6YMrOSB<M{a$`BtANkr%m-{iYNf|
+  1495→zr4Z6Jj;;4MqljUwAPgY_EFg(C*B?1FA3a&i%YYi}WEuiVoY=GTnJ8VUj)QA(dge?7
+  1496→z7uCEd?P2-c%hcIy+us?Rsnvdxyb^)3hz@tbfIKocUm*eB=A3+$H=UEKgw7qKCb^)>
+  1497→zLX|>XT;-MnpdvXP6X-k-a>fATK2KCb$rWOz={^`joKAyRF~30D>8xshYM-HpM`#`j
+  1498→ztpUn|02En4Dhg(^W;#N>%z0F*!3n+O8|FB98OREC#+Nh=qQOypvemqadA2EL5;<g^
+  1499→z(}6}wVP0Q=W(z~?J*m^plQ9k9FO*pL(MHU~1{9uTC$+2OOiX8L?#mjb)R!~_aE3H6
+  1500→z%QMN{_B`$6L|rk4K&uAv(LeRc8_8=M;s4#00uFwHZpDg~wr>3<+qZX*?ccZ8mM&io
+  1501→zvj1}kzS$$n_-4VzQ00?bOCAkohg^mtu}*bNOmh`(BFR8nWm1eg+w?+Bx?7@bGdrYf
+  1502→z$o-NSI1`^B0t(qtWI*F}15G}xI#-UqHj@NU<x^nTdYGfQS`NlZMk|e<7e+5DhLlhm
+  1503→zLwN>o^aU8rQ?;SCHsop|7(uFB`Ln4`8IbcPD*9FPi(l5;(fvZWwJ-ePNe3vqi$so}
+  1504→z_9-<{C{wg-DBO*8k+HNv46#)yJmwg9jyW?iz+a$s`y$yLG!z1NQFe9Wa*U}5WM368
+  1505→zISuY>VRI6v+G7_(W=Rt3u(bvNn41R+;Ou@)s$oKOUgMWEqP`IAZ-#o3>He%DDK%?%
+  1506→zg*4$dy@y2iW_#B{MF`(W>1qnKJpy`(h7cMJ)kh%_<RK2w9AGZo76GVcdJd(<iq_Yt
+  1507→zm7MeNW$AVnj<ytnGa3h~TUw+fqNE5Tiopo9L_h{MM9vliedc;Z1Wy>p=)PY0<|ooH
+  1508→z0nE-Q?LZv%9kA#%JoJ3dXM0I086A^YL2ZRdp|#^yUwcYe1NrH4AN%C&-X>AkFG2$`
+  1509→zDiqm_|2c@G{-@&>l0pRLZ|_;Qv4^jbQL&|LLn!MQVUD7RQDZ97Uii~BA|_|Vi0V@3
+  1510→zVL;`5ox~j>%{-_l)9yqQL``4Ur%xguB&9P03tx5RS4<2Ua|DpWkgO|Oc<Y}tro4tl
+  1511→z68IXW(~X{LHq$UK0t{1In@G%7O(EX2HAr0<`Q&EqMvF3dy+55u8{Ilru%}&yjTF>k
+  1512→zDv(C!3UUxlXiz+Bog?bCko$Ywn_bTS(Jk&w>N-d1^f4qxzY;lmGjs9=H#n>Y%Fsa6
+  1513→z(}eyg?GruI{63}-92{=xNjyUj?s+ErB~jXm3t7O)y^RXz)%ow&w}`;Qr67r%oTyoa
+  1514→zTVM=yd6QaExlmkn;@q(n@Hr#*5v%Nb)`X9PhMp|l&C*>XN}eglpBrIBC7RR>aI(ti
+  1515→zUw<w5i@;;r+0z;dz$_0<6xvBgBOqtNG(G`dcF*S%3iTm=lB@-Im2Kw@hQ3FF5Y;dZ
+  1516→zC5K;i0x@R-C>c`C3Hf@OjxmLbIpG6ZJ5e_w9C0aggs<m>BYgt*a-N?ka;&T}DEEe#
+  1517→z0nwnPVVJOaIFi3*Ehzk9LR*9R2xt^8vPwq_jd9WrTkCFe#dAjsAwqF_#4{J{nX4gl
+  1518→z0yU*8DG-Pc(ZhWg_EeA>J!2es>ZmOKWDU(s&|>NLBuB<DNr95P{@3|-la43mlBG*+
+  1519→z!^VxaaA3jq?%iukp{r-@BrA*6&>K_#RKOaw067QPOl*%Fpq<PCX&{QL7+1Iz8YHF#
+  1520→zjFvd+6zG`oK`d^?OY0ehHjyQ?HI!*thBxM^zA0#kFtya|l>me*s6ga{vD?_g=&$&m
+  1521→zqpT^qNH07snMc<riJbFB0gBs=sV5=P0&o;wH`jokbPOvTQ8J0!T|?>QhFq`eYBh@7
+  1522→zf5{PGl$bg&wBN*G^$Q<D$U0A4q!L1=DDh2jBsJGA-P654<cO@jm558ixG^T^u{|R+
+  1523→zf6Rc4v`elA2)xUmS!NP62M|7)P?RYGsCZ)Ei>~L3tnjp9)eDtdvJQKu5Q@EG#*_x|
+  1524→z{V}49v+WU7>aGw%#J0T-vxY&pOlfa{Bf?!8^P<r+VZt4HQ5wOjDZ=HKp3X^xTc|rv
+  1525→zWpjibm87%}(GKR|4Eg?`pKwkx+q?l~*9gsn*cOG(%O1`i5$yyt#?X5UAw`1PUUJgn
+  1526→zpHfb(^L*|oc$I4JBQPV>Q38Vk6u!hs8}l&9*r>kd1Q-xxhi#fFqce}U8!T2qkiX;+
+  1527→z<ZDK8+ygm%)N-<zw{a6)a+LX#%VUOZ16f@NTha!Q!<w-&1O^3Q-_n*jQRj6;u3{I0
+  1528→zUsd)e%&`0TGK1uF5^ZgOOi}@7o#Gl>=OIJ8yATCuuv8u@HCN<lJ~bo>fSg>4VNP$g
+  1529→zT{V!L2?3oau;Edxt%2d3Y=bWC3m#7t3NVjP33h)php$!e*{7KJo`D={J(B=#ewubf
+  1530→zGyvClw$(kKaLbs*Z9X3N^lNkHPjl7rJDUa{oA}5f4U5L}vF4v<)3u`}ESNq|5c;H<
+  1531→z@)xLiZ;v&%)(od0=w4GVMCnoTAy@HFyV_hFhcX5vPRN2sXlQh+hCoBoGbwa8d8rtn
+  1532→z{bFJYnIlPX8q+7G8OCv>!u4Y9x^r5F0E{ioWXy$2sd=I?FS{q%Ij$*Y#~E>9*8XDM
+  1533→zTZ*J8!ZhZFG3<UmHAPj1b~xWzaSf4_=n?~cnEkvaC{<R4_C5s!wiw9H&m8p0T+s8U
+  1534→zn0W{{^?1teaoIiH5+d3OAv2V5v~#rdPu{|5i6&?ixuY+z)kp_&w-oMWncF}W{ScfM
+  1535→zWh8W(pS_Zr5H)na$?q}h7j);r5WHbXsmSdFr}tgw6c+4%2B()m-_l&coW;(WVN_iP
+  1536→z?K<*Yb<o}>3Q7hbnP!(n1+<6&jC$l;IZY{~jgW5w@#@%B<o=5G=K(}tnc{~yuU+*!
+  1537→zXlyAtZerQzL;#`XaW`rga(>&Kf*`Rb&3TGBmDY>iPUNJ;&yCarjY#Bb1_~`_fAAxB
+  1538→zp`hQB{16q_2O_xEBVC%q36ruScaK;kUj|if3S)>ZWx=^2b?w@9c4*<S?c*otmM(?e
+  1539→z**-iTC0Yql$dx=tG7GzbRMA0-^s`92+F*qrPHN~4NRWNhoGWqYsGS~h#Yc=<N3$u|
+  1540→zS)OOH2=|V@E=vkk8(JMDvhLtG=e0niLRC9MvW#)itV1OCITfHnHA%FD+&JmK3dlBz
+  1541→ztbuBFP@A7~<OPPl1ZKivn6ycXmY224Nf3<nV%<PmrDl?OXx!R($f&qKo2M;IM^fu<
+  1542→zB1cRV$!<FU2A=HG9!>QY*gysk#+E)M*w)k-dNnUXnIPKA6Ir#(l2FXX6>gAff7<?5
+  1543→z$sJjDZ9z@k<Qdi+WHto(V+Nk3=NdU-S8O?BB4w*p;3#v_P*gvsDM&pcM5(DF_9}#W
+  1544→zx7tY%NoM-SwMbjqtL`?9TI<H^GTY})bAOo;*lN$x=LbD)f1{|UUK5qu52BvKZudO>
+  1545→z=mgK<{d1%xi$pYD#_ev}P$icxA$g;lNPT(;5HiwdqW(DMoUMV*5T%|lKM&%&m|#0H
+  1546→zsfb?1M)cFNw8s*auXFE7Nq~~pz7~Yb;Zcx#iYRC(An*oi%RNET-LH(2<fumlDX`I8
+  1547→z=eVI7B3`DF$73C=d894vlsr85&4{{G5>Y5#2~c3%Ie(rj<tg0mBZ*pj7KpvueA$q6
+  1548→zFY7_1x7rBW6)tpXQ7{;T%sfLp4B5qoBc%*(?zQRB;UlH7+QaIABeiy3(NHLJ5mZ(Z
+  1549→zwSaYn{0JJ5mTF66mXVz$(WN7S@z@)Y#w(0!IA<u$X5;JQx(6F%^BB((@;ok}%v?-9
+  1550→zz>z59ESMtChDzzFyOp`9<q^|89z=vxQ<df--K?|85|XAgYCJgR%~!WUAdh<G<)oCX
+  1551→zj?^o;%JbowauySwi?-HEEJD+Z^owKCFOEkCWj6_P7M_;0vd-&a4XwLX2(@!2exZB0
+  1552→z2KC0)5fMB^OJwdkqpp*|;mk`rH7Qq<dOYj2`<24wUM8r8JsfPiO(*3L<sXCR;wn%I
+  1553→zc+K#{tlF4$67ul&)gK*hBduQnvvhkyQ`}3{BQQ5es8eHt_MU0tYwzjfa1Esd7Cc&m
+  1554→zkeo3O+J|bN@o0}@0+c0EwdhQl26Z3^JYo<^C25MDApM%>kf%`k$sy#t0JH5h)&L(%
+  1555→zuq7|T%th~wP1@*fv(^DZ8#4_Qf|Q)ONS=ZfUC^U4haY|}k?m5!MD6IgozkQ0(a@A)
+  1556→zU1Xv9Y@~ZS4%lI$FPR*}%(X7ia>QPWYD8}mB7T;yJMQqIg9mNps#UgT?K<1HZ@(?<
+  1557→zKVVCiEk&wBo-Y?R8?K3~i!y4tA*%!7*BVI<K_nMDFYJ_2`#_zj$%=mHBz7^~q2|<(
+  1558→zE1~%vMWG)jtSsn2(gin4B$_0FPPd4bDcfwvvUZwec|%wCDYK?Ac|cyE94-$}Ox2wV
+  1559→z+|3*pA<v2Ibg<w9HvOj5J>qy=^qE?;C5sb#EfI<bjYu9V)k*4(VHiajE)x(v96d-%
+  1560→z$(@iIcF{bDg-=29i!2@if#Ya5Et(#RbQOZLGGRrvl~H&=L!aHw&+Vdig6}7{^V=S2
+  1561→zfN#bYnNiez(|+58YM>X?Cqfla^&5alqrIZuP{9$2N;5!LB88yez(!)PhoAxSgqvK?
+  1562→z?}onbd-k9TzPDY@Yl5p87s#N&{PQ`jEvBB(3HST8BbqNodIKqhKj*fMS9TX$V>G9o
+  1563→zfUfhVH5N!7V+r}Z1*f?q!`Ne`DGcYZUjYcs<KeRig51GTtFixl4^e1tA^V!P{0(#E
+  1564→z5T!Tpg%?#?HI9&lP<kFnl^=pvu>vfLJvl;8G{|l3N~xYitnY{^W_sI!6q&x|?&*L*
+  1565→zspKMOlHNNHiB?g_GAt%#XC<n)BA+)TXGjP<_wu^Y8Utq641JRTL*+{jl4J-W=e#PH
+  1566→zKLomk5M*aRq$7%k^tsbz5WKIb+nmwv^t^UT9%__Of-XCi;dv}Yk#h8d5pcanEe7)E
+  1567→zu+V2;$IyYsN<jn8eUQ?atM_iUjdl)zGRLdO2xqxDoHek{5#1$!Pt~Pa%=Tiy&}3J9
+  1568→z-2>AUgA?x3#|Bc;9DYSbtYRScxhw(lxxF?;Z&88NB91_8YMEQeL~u3+Of{b<@^|FW
+  1569→zru`t&L|tu3sL_F9DyL24p2M#Y*+(+cCvibYUh8krlI`iz*~J_u;p^#+oD)aR9QxB!
+  1570→z45)d?k1Uz4&nIPOV<J{*L@{?i0Xla{Vo0GVjG$2LGg*SD3eJpcyq2h=_P2vQnaS=$
+  1571→zDSW?H24?BQ+$UeA;HruR@cmViz@A#hQc@*}bZ5-WXEt0h$?ezlG0wx3nL=QZ^#ZM4
+  1572→z3;Sd+YtP}YrN?}ZIXQuBs=sDOwvcN#T&9m)%Cj6I``*$48QbB`%5lUDp`fcr%n*gN
+  1573→z&f6E6n{DegLFSA}Y_V+s%_7nFN3%4DMOQTn5wF-8C-~t9)VD&BDBBpP2o(O>Abe3V
+  1574→zhl^shSZ~{Hvb2dvA7v>H*2PSCND=^u;i}f)Pdun<R~w%>k_wND{rn;%E2y3+;3Nq~
+  1575→z?e);TonQt@ZP1}QISx_6l{wm&VRg|R{d^#&Bmt{=AoO@-NJrA))ZPoV4}^TTj;W!D
+  1576→z;yjjYyO=sa?XQEQZRN`T`G_*C&Ztn;X>I`#<b*GC^6yz~>9VD^a@A^ESXj`1bERGf
+  1577→z*Aqr7tZ>lWXqg;!ZK&0>0USnMjD`uX)d9IHhcXY!I9v^dNdG7f@afK_OF-iQMx$fe
+  1578→z@2YBNPJ-a~7CJO`T>wJ&N~m&0J*^~VQ+d$H_VYv`U~_SrHLRpdD!h!XAPN1=pM<pO
+  1579→zd}KVw*K#RANlhuYGLAWW!5I^KPatTIMUL#3$_X!ALSw5<5R+R2S&7&KJ+2(!=#w9+
+  1580→zVbGzS9sTNXHT&3|nJeL*&K|ukGdH`{J)XC&Lle0MK;@=Z=*8-2<Ecg{{xctbQOmyf
+  1581→za+0Kh);tC@19Ew~z=T<XH6Q5?ne&l$zUii02lbFyHako0*=`w*)|a%+hdjLyS}283
+  1582→zShY+^$PnpJ*jdP|8j@Q<e<lo2<d`^e|LJgg+A=U0YOEhVkHufXz6FPI+5wWo9&@RZ
+  1583→z&4jMiU|x9~?s143N1`)FdzGu=VvU*)EqQA_`&5sPOrLf4@><p#uTh#49Uj+P7~A4c
+  1584→z<DlR{xnWQM>S?PoknPtH*-*$9j_iSZ>yeo1v+x|wnPv7d)xOL{C4{Uv6#fajtI#j)
+  1585→zQ-VPu4)B%kPS&;I(ULOTW+e5rxg7_DzQ*9d7^i>^anXMrsf(NNu}y#6p2%!*;NkJE
+  1586→zGhg%Zh<WIxOC3{N(X*4yRD3}1UAOvvg*J>)YSF!)nj<*sJY6*$naO=JecokAYoGp*
+  1587→z8wRB#TVkE#Z9u1ajmuoRJ{AVYG#@1f#n{(WdT?LUisE0i9nW3UQ`THhVp65w`Mr;G
+  1588→zfq?YaR4%ieTC2@##j1hKRKN~$VCrbht2R;2x!e2EF|+=Y)bcZxw6bOs-h6o5r0ST7
+  1589→z8T&$vZ!iPdZ7s$mPx^>Cp##*3I0Wz85s~?$jS^Y_D|Gft)WNqnavWMd7l;1zG%3}&
+  1590→zbY|n!zzMEmcLL6?&&v+ldq2i{4r;jeX2=kHSI|I-M3)O`QTP@>5&3gJ4$Y-6(&Y`O
+  1591→zVc!6a=T*z$I?MEgq&(;|h>FFLtc;yP{f#5ZDGDjfNs#aKB+H+q77a1v7))izQ>b&1
+  1592→zlW-(}lB}3Y8G0L3!ay|xcu<F3ViXw{bRdXCOm6p8_|8dhn^&RasF*Qlz&w7~<}}WI
+  1593→zHpkq!UU{i0<smhd1dMG$3do(<G!+#3AOqvs*_vr}<x|Fi9Mh%N^GVo(1-+B>OVnvl
+  1594→z1MMv;N`UQzSp7sw+Cw7MbspQv>qCnw;)EJNgysnc8_08h>FO<qSFKuQtJkcteS7xX
+  1595→z!oooq(XbW)6Y0E2nhK;YisuNULSZYh-grUl<g^WkOw$-(?h_zT^UrR@+z_Q98j70e
+  1596→zVkfB7d`NZps|^ZXm42zUF#DTT3L#U4JO6f{=-V~8LXXSbZlMfG_N*gE$Sl-dn$k~d
+  1597→z@JVUi2WtCmrVuQiYbpuNt#b4PvNaWg=p`53Xj^80_C7DrB9>KIM$a2q^o37WNmUZ^
+  1598→zz0S=wako9E(-8{wIwxcfYGkPW%UnI_q$VJDb(*sy>6E6dwvK@=mqr3UO<~VDgDMM(
+  1599→z=`=Pwiedb8K-WB>&ULR{tNrvosQ|jYzYv43nGqS(7S?=F!q@xS^VNCKx`pU)XIfd-
+  1600→z*_4;X7&M~hPk17SVmrxGp@gYXB7YC*{EVo3o7b-FrLTee>L)#$pK4A5P2}J~lh#o7
+  1601→zl8<WEDCDPH{0Ui@OBxXp+8Fjt$m5y=6dNyEU=cj8oZ!9;=sDbtSR`-O6yWpd0POB^
+  1602→zhx_WxIx<H6)j)iHoS8Ebs7lT=kfPkkAvJ9glWh08(c6?*0HersK=7n)LzVRU+>y58
+  1603→z^%R2JItLy-VDU#sDDC+&lZ1V^&dSFk$BQ!j$*SRfx|$%!7XfXyLE#9Ry-hIJo<jFE
+  1604→zObnvs9QDlM0NTQ2Zm-hsuTi>ByCPIJMY?7g4^iC(^tKcpiki##VyCh3RW^rEwZ5vb
+  1605→zrU;0WM7qM~r;rNi4rYmXRMj&it;o*%BM|cusj~Dr;`)@#;*Bjeq}js(^iF)&d~%x;
+  1606→zNI3}Am1s>-h*?tsJ$yRDVe>b*ZX8mj0>4%?^nnw(27r)ekBo?(0w5z3){He_;Q&2P
+  1607→za8M7go73G2f*eu{51^L2)KiT9;`IlVOgUu|Vkbce)=+^JoGG>CY>v`C%SPzjnuE3>
+  1608→zXM)CbmK=*?LTX7NG}mwz0@*;Kt<+$xwi+Qhlx8pF%5C<agWkiAoY9_aMDBxh5AEt4
+  1609→z>^4y$$PXp^PsmrGys`iInk8eCIlNv$G3@C`+&F+F7Nt!hm?gi1VvB~Ll&I&;5!rn#
+  1610→z?pN8KTTn|>0*H|Vwt7uXKa)uf<QxYnAfwQxqE6@>q`OX4=9$KlLleDR20xc6@ZsFW
+  1611→znydLcr;~esy&mCCal)UM+UyhIIiN^~B7GLadxZkuTJwC6nHJR;LBzUvnD@s;=Tgaz
+  1612→zOAav-we6rdS3E8W5ulQR62S>S0Zv;h)-|;9W{`O!U!<4~aYj~-h>aMTdl9H|Ca-`W
+  1613→z37RMAFtlN}I=G>WS|<-^T8$$Z+C?czsi-#g%H__|HAjiUCK-j)I0GPOgwKr%WlMY3
+  1614→z4z%Qy5x#f>SAD8nIH?8|prOns(Dr&KDQDxPz|duDwj5r!euMsL#NIu7;OnW>eY7r1
+  1615→zZq6A*V``!TakW*ZsvO#(woP2Qf#G5vP;VwYqQ2>98#}3O21~x$ZXj8X9y2Te14e_W
+  1616→zY+hCrb*lV@EMrhrQDmCJI3RWSimP34o3X}4!bGNJLqX%4KK5;5o<zFFe)VYslYCW*
+  1617→zc6)+8+B4yRmPFD(30Lee_a{N=P)s;kH8g(iuEumoNs>#W2^uCvV}sb4lRV+c{#9R(
+  1618→z0X$s;#mws&2e#lA_jz6~2}vlt-7(hxG%GWs?qNk{Fshl3cXFOPLkQE+5MjNk${h(I
+  1619→zIYfwl&4p(ml-5PS`K|qiP~fN;M~-7=s41cHwrU1Pvq+eUY_VCUJ>%*PwU!H*KYm(^
+  1620→zT^(*MMGik#rT8NfQ<>&OKAGYigFkn#ZnnpqF)SndUYzvB!+;b#Nc`qYjBC*m#L5@3
+  1621→zv)z@1ZcnL&!XR78Reb}(v50xdoo8B?LQgZ18wqH8O2JObB_~p>ZBUUO&PMNP18zue
+  1622→zTf0JRvBK2fBOD`p9$M@q#4D7!$5`pyh9GBSxDArafih=l<#T*m6&;Ey7*r#!zZS?i
+  1623→zRV{Xya3K4n9*~so44CQ!Z3<&xII17Wn@>)4r>HQ5CLht}kwBcMM4<=U2))6xhNI;f
+  1624→z;r#Zs1%RTWzwBPS_TwQ|rwYy_dS4yg(-FA>l~JRIvCd0FHt2&Z!^7Bi0;}{PNY-KR
+  1625→z%p#XdXx*YP#<|9xhn;!F@B2__3ilqXiJxfg6lA)VFRvk(AtfS|(4|N^=1$(!3O(jS
+  1626→z=Z)OKiK;arcst=*9F0H$F}-_p;Z2l=iZ}ywQmG;>%hpFY<~EbuaOTqImd|h@b7Txb
+  1627→z!$1m7<SD`oZyu6Tq8w90%N0WUr9$BV8V8_1FCGQcozuY_Arf>KJ=vAwaF6Dl&S_de
+  1628→zF)`6|+zvRLCrx`$waPSy6ISP@?mV9YNwUcwdFH*RBh*g#<}o}vkhv&IN_2~-n$6Un
+  1629→zV;aB_E$r$Cg^cYvTq^Nc*LF<`b01!9$BpTe2Sr|6TgU|C9--{D4*^99Z0Akb`W3+)
+  1630→zGs6zl<rq07|01zTP+JmX)q~Hzq}*~%P~F*nQqxya`<qPi#`GSkvN|C%-n|L-ezef$
+  1631→zmTqT?x<|v}B5Gv`RSfW?rctpjE_MzihI5CQsJ*|7^xPkz2PC9ck_ovJ6ZHG;^X{XF
+  1632→ziECY_y`|}6U2JG&_#K|IL3<@_#gTE-d1-cCaJoIgUU?d<PI0#-@v7zVbzv?(CZt43
+  1633→zl=Oi_5e~+8zYEh;g7|!Nj!f#L9JXY|+G7r{S+~&+9y(+P^B+bek&VTOd;mNMw*||^
+  1634→zM7?TZ@*=vFz?`r}0j}pLnba4@*uR7inKAM@1ywE<>|qnyl_c^fp9*BzYW_y25cb-q
+  1635→zP5>YWO)s)bn)x6hVqAj7GkR!E5HhO9K&2P(8K63J81gq=QdIyjv>6+Aa3{#?l;T1W
+  1636→z;|^DgXefq(17)&G1LT=I=fS70b#qRxKYh&Wp5O(N?falR(oXpBp-Bj9;U+K9Jr4P&
+  1637→zq%aIG5K@Gz(IK?o`s?8y4z2C;R;0`lqs};%^K#Fi^Xs{zPdtXoHoJ@>LJA$|1a(1j
+  1638→zE8xww$Rgo>0b=6-DYw(58A2@bJk&nBh*B}W)0!<Zw0;A5jylt!F=ztlXW;=Erz&#y
+  1639→z#=T%{qK$`g)Pi!l(D<HA4{thm1271^r)iF^3eJc+2zg#8BL~#@!Hx-589`nKpm+#4
+  1640→z5v!`@0dgJyN$gZfQmM^>s!%#71ou(te7Od{qs0c?$C10IznQLF_+voHPqg81otx}c
+  1641→zu35_sa_02?lGIRA6q+E{FrSfGGJUKIKX*jqv{(osmt_F2D}C1xu&1kTo^A}O>trb(
+  1642→z9@NHt3zUY3YZuV=VVOv$$9X0NHT;dM5-ml3*TYGBNUd1}b}_t6$pVhCzce^UB^sgE
+  1643→zE%FMzFYa|N3xd`j;oQ(0XC5+pAp05^_Kym0+YvGb-Lizs=gF0_6fJU!{`?8KkaF#^
+  1644→zfoM^JObQ?`jDhqG^FWl&4DF~W1_IO^nLH7zbGN4vJYM3|)#B*p8U?NKdjJI(oj4cS
+  1645→z=iEmsGEZU}n||3dK_^j?HBFgXB0Zs@N_*x}$y{`Znhf_lASWl(Ve*NRB16keIVP&0
+  1646→zxJ(Q*4x%BmJBx%3_OdM+=$|peSf)<MbHvU4Ec}1QG|{wO78qn+9fc5mpM}!$xX|W{
+  1647→z6-<4ei=Ci3IEm_-1*|niAq{;5MlCSMn5U$V#tABuOFtGbPsw2`MlDGKa?D$3pj~IC
+  1648→z2>uWixmpQl?tx76^V*SDe2j`p4uFUp4ml;Ml<GE*qtQ+M+Th48w7$U6au8_Kx%CWc
+  1649→z(JIGzaa(<VCoc*%p*5x~k~{MCTQFw<x3><zKLS3!-n_4IGL$vPML<@T;Itw4gh293
+  1650→z4#+uo>c2k#FNvC?zi*?zJDig-ZukBxt6bzHBc-090It?dpr)Vt=#5q;`Ez}VF6C-h
+  1651→zi(}S8LH+i0SpbdUAkQlWIIFE}TMuHfJuz}3mkQ_6HY5zat(~h;OrT(*I1yN_L$A{T
+  1652→zWN2y9l}2jT2|Q!>xYW8b2Wmt9O5)z{dpeQ*=}$<|Xn@+O{!Ebe5iNnV2J#vo@hdl;
+  1653→zaCr5awRT|N0sm81bY>EQ&SWwvD5i`8b$AiK8U^OKhx8NlNp)f70^EY54q<3+l0#)B
+  1654→zNQMxyHeUF3Qr0%9&me=sO*({FqClRWz|1_Rr`zggYH@(fj1Pay6eRUmfRIkn^HhS|
+  1655→zI2}rv_BnnAD_!*=NH!_cASP^*&}JhIi@>LwvlrBodUl7BUt5Si&C&$<P-KL|Tk7M7
+  1656→zAVOvJ`6K4^!pk7_`SvoOaL3fKC!8|&Ic4}VwsO5f8TybvY@JnCzaYX(Qz1i=;8E!(
+  1657→zrnw1ky0S)eCQy`lVREC;IAj?yZ~Yq+m3ECk!YZR<8Y+9t4SY_6jzOk8ROI9YL?x&E
+  1658→zFyIl(FpFtUB0~c$C57TslT-!*;S9Aonnu8vDTw+;w?AnUk%*5Vx0t9M5kKL$;PJDF
+  1659→z9f(4-78K-3*!+2<5%ZYD31?7|Kr@bq?2HM5Us*_*BuZ82iX;`ig>lbNbRYMJr1Uw>
+  1660→z4as&xAQbKoi7k`LMCNk8`@AKT^YYE0wvD2tZ$iLxIy~2+3>12!6LP<>dK}?>OFjLl
+  1661→z>b^^H7)a+jVqQ=TW*}4b=RQE;?r7IW{Iv5|rV_|U)Q<2eCZ!3AA=xQ-lg%o)Hh+Bu
+  1662→znKEhY2iR1FIisggACnVtL~q3<QAim4-PifGCC+4MK@c}gUe!zvw+D&f9uG0i#T(0j
+  1663→zqLE6r6zMMJ8lOscQ|kE|w*)blR2IRDr~%<}1UIL#a>Wa>?7?+pplbs%5J{8XXfUL$
+  1664→zLUScjcxzzp<rWCRHziQkwuClYBID(Vm>~HYMDP?XQ6yM|_Wy=#q+WkY)4-AY2<AM$
+  1665→z64Wde;EFzJXbN(se(G^TXTS2g<USX>Fiqg-XX0Z1DAJ9(Uuv6Bq=Fg;!9{<55kG=j
+  1666→zY#7_Nn)qqvb$)QS;Es%+an0cp*&l^LsMnzuGA}lH5hH#}gd$_wgkcT}SBMM7^k!M_
+  1667→zgU9+B_qxqdBJ4f!9Kbgd*5crS?0)QuB+@2%8aYAc0Vq!USNommWGZn&>X@jZZ>*Xg
+  1668→z^?-hzbEJkE4~FzPb+r6Kw9!Q%2nbXxRn@+iY3r};A-A{@Lo<sY(;o?oq(35toJDDU
+  1669→zr46#G@F$I&CgVui1=l=JChMr&mM4svtJNWd+o6<GqeJ-==(>c^-ITAfBDnDeF+xy^
+  1670→z79LbX?noiPrt>#cfwmAO49=^7$mjD|kb2}}pBhK)Oan+@J+VhT&AQgF-F)@K%U7(h
+  1671→zeS7z~6Iq84pScJCQb!fiq_b4=Bq&enjm$z#&p(0FCPbEKK-%E%sC}r5-Jc!`2QG;y
+  1672→zhQ&=G{OweRQhyttA^lVbil~NKjsON583cc$;Fi{3sBQL<gPSp3USvk+XgpH8jXE`<
+  1673→z(ow5h;p{hbcyeS!8Ijr#5l8mkyB!+j<R@2>9`0$WI{|>w926ldCQ02#sI@SWG0Z!l
+  1674→znVM{-K6jb3*uqpj9b{D9;Z~HIMDK%7JGtGSD8mC>X)nkoP_OtT5^k{}H#Q922O*Nz
+  1675→zdFXRDqH;Qzql;N()?S4yj<?{y$;#lY;f;B43uFjBCA4=mEkb*Sf*`SyzX_akDCtL?
+  1676→z^PIKTxKVt?7n>Wx{fy5bCW3&3Ii~p#xd54xT3ka0=9GXkIchEx$m)+zTmx;LFHMLQ
+  1677→zaXE7UF`{sJtb4VCwQsX0gx{#@dP3oebj#=-nJTIE!Hr3+nb~gM7)w9F{!{dv&FF3#
+  1678→z!{l=q8Eaw!dRv2rGE(@O8@b&Miv$*x0ANo@4OeqU!j@q)>sr)g`jQ_!nUWxM#VIjH
+  1679→z1Spe??&+WOgGXY-!tIPi@WU;n(ufdXs+4wq2dAG)Ve*g$`Gea9pahoL&_j^BD3~Z|
+  1680→zWnHAZkwrrr6MX$_0F*PLi+Kny_Ii`BJ--9W58b`ddlb@P_nVR;h0);|+}_i5D^ch`
+  1681→z*VvVe$uSUhZ@Jj}GtJtwjp(tE>xLL6$<fye+{q;7To;C0O3KD6p~HCSh&~MYVd`3G
+  1682→z0Y=&xqFUD8Mh-{1T7sm9TO1&fN4^`%`Xs8M#*Q9B-nuX-W;nyxy1!XHNsoizrkbg)
+  1683→zHMEkl83CUI6!14|cLTmo+V084q3dwujA{%^V<OiLhyRj?1RNPO;ZyaIyQAxlZuQhm
+  1684→z7fm>zd(4R8+)}vb=<z66=Y+K+5d4t_K`~*M7_KTu5Nsg~Qt;9+1$-^dV#MUo1wo9U
+  1685→z<(Ram!!IE^mvdHQH1x2yIZZ<HgCiAkbHgAR9{IF!D$o=1LQ`xia8Ts_Z+X-KN;J@(
+  1686→zWJmUc=zDa8@&M`2nCx1%&#G~wCeoJOAjE|(6@_w!EVLk)(C0S)GT@*Ld+kH+ik9mL
+  1687→zaE=rEl<>TCi5`g%#A<C)0YV<;AY|D?90R84tSRyuTF+TRRur_#gCgg~BiyMtH$cfO
+  1688→znbqNQ;GW@iVZk`Rl5kWBG7{B2=x#SKUb`~<u7{j46EuI+RZlrnPS<+K37_07!e0GN
+  1689→zByV1v5DNV=hSGEwm{%SYGQ+O@NH-uG)zFDx2*Ws%Lz|}$TPO82oh)z712mrUv_!FA
+  1690→z(F4`86tXAbx@B0>{7i(F+?=?qK<4w4<{@Z`Pd?z;9pijBhPg-?&LJ*pB6AFJ1+@*2
+  1691→z3}WH?U-!5{Ga0@m8;-r!;iXHK+TPu}&6a`$hw{1Dh}82%Rhs5Q(EwQ~Lkh8Fs5_Fm
+  1692→zS<@^-N3y2&gfAieU^H^yEb^zFbtKC9pjzg}722`FTx5@7L4+aI76cTrwnJo^dG-;(
+  1693→z)T5ARRz6NFrv@!zL#p9~)MCpgN<I0sb<I-(7%FmD`@9bG6_8z0cS=VQp@PTyX+~t-
+  1694→z+8q#_h$YDDG0u=p;f0uxDRXy!4F4BHOH+fRFEIHFunP3FbjjNsIULK}u@_SpU7EXI
+  1695→zi=uZRdddWo@kd@sF}t<nKy7E5k#KL}K&0jjSD3qm2vWl){&ZoamN?XX??R0Ptf!&5
+  1696→z9Q6(O6d6yD#Tj*Qj=G$n)U$a6k<%q#CzQxAXM$D-8P%90*C7o=5TYs$AG_>47a%03
+  1697→zUBo(DE)>n0jtX>UoVGbTAlm>mZv($L=RoHyg*Ipp_7XOl!=`>@I`I3tbogxb97(T|
+  1698→zw-p@ZNKcohaISZ;aH9E~k#vVS`s+KX&0+Q9XhT3vrj}`f*Z~8a=fQ)wCKp10-CY!5
+  1699→z(}NZ-g(d*e;Wp;*d4v~9r{2bq&Wc>WYA*Z~sfa>DavQI+h-|OtEXn0df>%PAwC7sj
+  1700→zWOk8Qw87Xy2ecPc6RuilNt~0Eo}1?<Ya+Z!59Ge0-5E&;J{dC`X1a?*%h14Z?v#aT
+  1701→z66c}XLu8+FG$jKp(3+vgRncPu=y#2$qx-U=fY!>|%Ti-Yei~ivEzRx^kIdWyGU-Sa
+  1702→znrRZEuE~Zz)j18+n{@7Wj*q~7J?CU*8>Nr8w^!k#>FA{1Cvu7`3JR{X8-+|=Z4ISe
+  1703→zz4>8{W4hy}a85_+8I^T%*sZ0krLdR<``=uJ$dU)+OGX_zi_PjGKnQKFDjEr(pL)z0
+  1704→z3eQnFb1;*ZhRCG^khKZI*3fpbN>Af6Q(07MWc%eoC3)~@vqRkuK{*Ehh<3v*NGyl7
+  1705→zryT@$hdpd{B-)cAp;r4LI|b{HcAVI3&U5(a>%N7qy&Q7$RQU*)hIrA<y@(nfJvhr@
+  1706→zZ+-2tbcyYzxk%Ua9AY|;F6d+j^(wQ-xT(Gfy2mAj30-R9kgM-Ou9fBi54YlA<%8()
+  1707→zM21fhoPLhRDkon`spq1Q2OjlFP^h^!t(}@<z^uJ8-0LOnv+073N)qgS?|3yNOwc#j
+  1708→zdmcv$N;m>8_o5}8P>X?naFe2X4!=(lF!j&+#(hu4+i|$w05$1DGX*Uj1X9{_A?p6#
+  1709→zF0T$zC@6hF?`p$%F3V7m%ACL%wAO)|q>lYa;Pn%6Ek)0<<f!9Lh3}B<*}Yr;JVKnB
+  1710→zRNM$qYjKida&&=#slJ#RUz~LNOh-wREgaAl33Y}l2MY;6FvN8^dL;~fNG>2L)ER~h
+  1711→zHA{y^+BQ4cg+(zES4uM{7gc-ntQ06RE;#IW_BW!$kv|MxIfs*)u>xu0hhOOa!t5MY
+  1712→z;iwx{bx`DHp#gTILd&3Y+IydnCFmaSBIO=8A}LJfjNTp#-)e4S+1iwe3IsW*6Djom
+  1713→zCB=a;m(AHYnM);PanOGAL#Gm<^+mCBg2>84Q8OM&o5!(j4z6kBK-YL7CQY-#@CoS8
+  1714→zzG)wck0RoU^m9Dw25mBkEDWD+XaU_XQv|wMJp$18py!*|+(QcK1x=CK1L|*=>pZrE
+  1715→z1VpwJ(Qa$V7zb1MJcYeg$%A)D5jx$ngBgA8@Bp9NYIpcGCmTZTbVr(5$X;?FPNs}$
+  1716→z?Up_fp|qwMCpirag^WkN{uMW)LxMjyK(<pM7mBG}$o@(xNIr^;7se#1&HA+~RqK3P
+  1717→z4Cr?*t0TCmx;Z3O?pH}pxO~i1@?3E=zlwDD97!wOs<>ZK9wr?E*V7*Z>K@XYlaMR1
+  1718→z0CPZ$zpo1f5u7zMcc?PMus>MC(AkZp(k(!$6e1;|-$<s6Lt5l(d(0gLo~#Tn#(`+r
+  1719→zqCZT<IxsvRG!fiJ>g>9|vxmxxN7Gfgt<3;zK8B`hjFQ7fh#&D<(@;fmdb(YT;9OI2
+  1720→zweHl>V)L`C2|8-~kyw~_E@&02Ip(g7lc;l4%sEfOFpnM0-HJdsO1i+T#o@tT_N<a3
+  1721→zZ>I0(11*%j&MvljC^Rt;7oO^B>nfxJVC$JZORp;517?^g<Vmv>t}p9EI8o&uTy$;c
+  1722→ztWopAMVm%P8szM|!(%;#h}{R9=94vE(=(BVbeOO2<ure#@3*v=B4b;Qz#$e4kp@7h
+  1723→z{HuyQFNxWBU&EO8?uXE$!iJ*RF!-rIW8Gf8wC7$y>5oYI^Wah5KFbW6u6<z9oYheS
+  1724→zDbEHaqkCNPQAf-y3AQlG#v-_s;LCaTDwKeS9s&n*)drX2WDzzRS}1KLzbtN(TzLxj
+  1725→z{U}jIAg-B>PIxk*uXZqs&t)oU49)=9TMUFI2fvt9HvvZq!6AH3966^A=~GztoO8-L
+  1726→zv=SpRipp^t;1>hs@>*8NF<;S{G*?o;wgM2{)BTMbs;bE6d=zM3mVB;hZpJbO2Cbi4
+  1727→z+X4r%K4*{cc(0JHwHtY*DiH-#kmsagKe{<3)R{L_7OeV|L|ldhBFybst8&4^Ynv@$
+  1728→z$=$s^{)j5;(HXFJO4RQ4IS5Ca9~O{9ZSyTSw=@ILNkfdECZS7hjbM^Bi1m5L87T1>
+  1729→z^Ans8_jS0^#vDGclIXsk4?@XZhn&->ZQz9~;a5rs!<+%L@8=vI>7JAcXSyYyOPfE^
+  1730→zcpEI}Z{8RO<}7(Cs6Yx^PewSGbJyH8-%-b(diW3wdv@<KexgpKWD-Hv8*jCd!G+|m
+  1731→zT0{j$(6Yk~^vgCnJUTnueT$#uWPyiA-DKH~M9&nEA*{jG27{?@$(|<mL4;6oPLm)c
+  1732→zrG!IlR!BjTKS^k9k+G#!b2p(V4eZtI88feYnA$BA(w8+rF_N%q3~*%*UkxFoM)J0`
+  1733→zk{f6tLo7&fVom5Bi#p(<Z^)M@ml9Uf9Bh__D0PJk(x}+lP|9)$ZC+zey$U{jM;Kkp
+  1734→zCZy2lk&lL4uk=Cnt<uOsUI4ZK^}t-zez|$T&_7X`oaK}WM7+~VLJv`qT@9Aofo2vd
+  1735→z_2484pxC)UO9)Tl{X8fN#WaK~E?aGM0A>XHvX6tj+9QwS9JeQ&0>Ad8ecWHQ#W8Z)
+  1736→z2GCUR&ln9iOx@DsYnEY%#gV-lGXjgw$&fW_V94nhGEfPJx7od2ntFz`fg!8lH@QOr
+  1737→z+J1#S+2iu`9E%OJoh#zjGhmT`K)db{+!w4-WINP7V`K_px_@-OhMeeq&1A_adrPh)
+  1738→zmhneTq2+<x><w^|BRRauC(4A;D=qVcYq*XGP8c~+<C?GDM<Q{;tF0~}Y9jL_Q@&2f
+  1739→zw%d$E<+Nza9|fGJ(g;N9nBU<!p0aFilu99zjeT)rUDtd8DT|ANi~+xk#ZPo)FbB%A
+  1740→zID#~CJ4yWJY_kOf2bCl^(kDIKgzP=Axrzyx5>UW2=3@J<G!u|h=eDYJ3#Dwq=PNZw
+  1741→zatNQ>&<013sr#U=MW)TOvh}xclm@!5v)dZr^L!pZu5HKc`qw>J@~SN;Xp|<Yw9}*_
+  1742→z8}OQ?OME?#ANcdOoNUrF7pxNKt=FM05o+(}z@Hl_c`lD}nds%1TYUgH2kDvaarU<7
+  1743→zBdB{WS?XkxE%gu>$p;z*0y~PT?g3J>FC%oT5(ppOC$RyK^wQ6L+UCV4N?VI!Hh$=1
+  1744→zL3_Vb;oWHP^`If=ByG6^I^=K7qg5D^qqam~Z@d;*Y3?%+vL40OT(pIXPPB1FCC~}o
+  1745→zLr{iZ(c=C;#?15bw3+Bmg*bEUy^B4`kgh7z_)uorFPL=I5&RYg(mYxNos%{+x3s}`
+  1746→z#OO&Jk-up3Ul!v~o>(mmCiBg%pWEB~N1Vhdl@JXM`66Zp9_T3xClgL4u(y+bJ|>)K
+  1747→zbJjkAViSnUl#@0q7U@>cT^gC;w9dQZ2+bV19TZ23ReEreOH_Wf7vYFdIFgXvQ$<5j
+  1748→zx1AFy-2$M{cu)_QAi(E@j=_AD5X}g`NNin(Bc3~S)kXrG%Vv&bESGHJO}ayeY~SwP
+  1749→z@t<9hUipKh3I!X+$>%3ncEL3U<TN*aFdWdOhRuUql{|}#b~kzz@pGS;fPR99KlJ1e
+  1750→z`JiY7Q2L9kKBmeZHNxk|WrxPz4A78M*%(;*JDg0B)cfIfR&I`M*f_LQ^gKavexQBC
+  1751→zRaLAJFkB=gyQg%qWt3L~MLg;rNjY-1B5c8n-ZOz@2YgEBe6qxDHb>*5%KnxXqYgX#
+  1752→z)Ac1hj4{BR+{(*wxiJGMKn#A1V;dm?&Wv8PIKsy#WNzx11KDBVbC(2FP{KYJxrY?!
+  1753→zrd$uDVd;WU=g<R!Rr)xc=gd>PqTx$vg6h6*DAU|4x!jvJ=X<`8gV4GWd2(G?)&9Cn
+  1754→zLfBAwtn=BY8UCc-La41BA?1uOe4*>}_E@)s1Tn{zeeyZ(Q90+L#h6O>HBH$^xxMH)
+  1755→zP^m9&_I1lf0rA48nh3Y5uz8gPAab-!aE%;z(%CjhR(_t%{GuV$zRMgwK4{28TaEJ6
+  1756→z$xN<<j_`LD5zL&g!8yrSa}jX&HKMcd+nAWs?X1&W&k5&*L_6e&Q0XCQfu_Zi%775a
+  1757→z3#NQ1B3F|8d@@JqdN4A4kuUYcFfS>4nx@aLBOKwAtEt&WmO%<=P9s&mcpm`MaBfsi
+  1758→zifSu47+>aV1o($R0nG)Wg%%F@&728q3WhN!U3ISmBfqZ%x$?*mR>Y3!y{vsFAwwi3
+  1759→zzl{k7$?nK}0$p7cX5uD%1<2O-3ae%Y!Wy)?gJ5a-kA&cq&ia_cjvOruIE^)=9(INv
+  1760→z1EL=q1;o}=;pJTPZiG<U@mAd4c#4C9hf5ydr5j1rd7{SgkW*F)0HSiwrKy2DhkhxP
+  1761→za<tn{1L)o-6moH_Zevu=oZ=&ivhl&Zs`*Jd-kw{g*roW9gSI8h@Ot0vLe$c;4}hD?
+  1762→zI)zYADcX9EItETdHBzpPd8Kjl;AAj~9`5YdWFRI>p6I{AP#%)Y`xK(!EPw)RVuVlA
+  1763→z(-{Mt;=W|m5vzHf^K88%x)li~b41@@ATppMqgamVx}Al5C~{2Rr+FiSg^xCuWVo#T
+  1764→zF8d)nbm$<CLw0y!L3w=c56SO+!of=Gz&!^mMZo*uEwcyIrMYPa5hi!aM5m|Z-pVIx
+  1765→z%+JLfa$6?~#b2i=DH6iLvfDE@f=X<{-RS^AZ0)y(+|ijya7(Ah`oi3~U6xNACsdC2
+  1766→zw_7N+yaF_T2+54ouIH-b39|o!8OU?AOr#{~B{`7SqLx1epoF)oHrr705s}g77Xd>W
+  1767→z7^O#|NfUyuxfEs^OID4IwGgVk<V3!jU;ZQ|TIw+eQS)SQ%Ms3z6FDYH#G#)k?YJcg
+  1768→zb0BJ;$6pwedCWCe+i~qoi(fHV#u}(w-ge`(YYeP0w_@lK>rOOb5vTzmXhS!PuVo3j
+  1769→z(L!M5oFvpljv=nX1BE`r7{gJ=U+3_lLkqTd4{y>fLrx5>lEp<4Hl8;$^@egH!is>j
+  1770→z=M!qr*MvaT!41`?TB!n_JKO2@1RQ#F$CMMP3nP$@0NYN^xFIsOYm_?I<(>`_9_)wP
+  1771→zO232TRgi=}cO%kYk@JyY9%t&w(k)2cH~GM?@{ryg<mL$7ovTs-&k!5YiVakMOW=7k
+  1772→zXYP}1Nx;cBj*lqwqX!BZN?e7KyO<26toEFHG$vmI?M@`6y_o$u=og)AF_Dc%J#|l7
+  1773→z?`m+R_Z*$=iP{!wiDPcnpRl#c1u=Rex8qSvK-b!sqRJ_0ZBwV5A<PxB*SsdM&VV9y
+  1774→z(>T{ftmN9}uyRc&!P`sk?3xhOR`Lk$t2u;F>J?zPF1G$Vqen+Rm9(ZkAP0(xS%~Br
+  1775→z+t3U_V5#<@PssVYi5S{$lR0vFN8Dev(UbWm4Fc`OT0=zZ;rtdQ*EBOs5#rS}UofL+
+  1776→z-dO?O$Qf0-#=duc+O+=3g^<(b*N)`7v1LlWS3;X+7~7k8Ast<+ULg#9NA+_+eX5aT
+  1777→zLyGWqfb8Kw6H07ao$G)s(OEs-(IYD`qs8Gvtp?_aL}8wLlMbluwRy)+GfSA{ViDsO
+  1778→z+#s<5iP>ZwJE6TmD$O7;OV88UL%*W-7#HP-9%-7ra%Gy>of}5MJuME9w*^29x%J%@
+  1779→zhkPv3KtRW$Xf&J$w+PNE<CG9u>(`KcK5D|8w}@|L%Z)=u_w<^`L>2Up_LeG8Rt@IC
+  1780→z5p^(P@^TKFA9~FpF}aZ2nxdAq`8_6F!mykLdHoPKIV~s(a2T)GaS$>>W0F#LC?)^Q
+  1781→zoPNOP%{V)}3^kK1vE|E_+p;CgZDHZC9XN16dDZq3|FoEH<jIhq9z!F(36xW90&L$!
+  1782→zl>VSM{E;*4?uhu1THSJc2G^9K<r2M2P;waCWC~0dV&*-Z!ysUC8cN>3M9$t0pzgqy
+  1783→zO%*U5xr)$&!cchL6O1r&NpF4ykDxEobVPuv7OY%J9Yf~i1<2<ZG(;TA)OgTj=&PZ<
+  1784→zr5Xi<L;SO7)GJmlx8*BVL0_;1?iKuK{3ODrc05E_>?WPs%84n^bAZf;wcC<Ci_+Ip
+  1785→z(&%>ds-~YwG--RHD*wF3!4s85`U}tZM3{#7aD>xmi72F@!$5W*%&unSki4PxnWC=_
+  1786→zWaJ)NbZ5YWnku-aSV=zLvO;j%1T_IV!oKKQ(#GX|=|uD{M6YJE`gn4!$;uq`(dy$m
+  1787→zeCTl7+cPL>IUlJ;c=K!R(kXk)848)x7eXHw(ew71uBd)TOP3ZOY(a?#idVfPL#!4G
+  1788→zq0zl0avsw{m2=h<9KDBu*fSnF@d*(>R;X*Hw9Y{!7aI>T%baGOW`S?efn=m@rkjd^
+  1789→zk^fua7eeKaD@vJ9jk19zX3#TA92YgD_S#lJkDzL(<;h6-3jDdfTPbIjB}bib-NT0#
+  1790→z4%*&byKU*RW$tVjRA$E`*fN*)%NzrY3qA`FhmEbc9_&)rvxEJ@9gvJ7<NeW)ZWcK=
+  1791→z%EgE5k#mA<kMPA0o`-rPnsF+WaY#-BB=|iGY~4Jl`Q|7Tuj$WxVIopYbLL=N`uGAN
+  1792→z?Kv*@!j4KjnNuk!^U%b`L6(xcBocBMvY?PV3fU+Jow;+UQ3>77jaxib%s?UoN@qFd
+  1793→zWR%`!VxeRZM{fW#4QsCi)zL<`qf9~|=UOZmhrUuC_F3b2O$>h7y`7wQx;dMay-TsO
+  1794→z;!^Oc=WK#Va$}*mRzY=ci*vrWP>_BVkrP$#FKh3M`jsYFGS^I>6aufi1MW+%D9In-
+  1795→zLB7^8uSr9&w>m}+b4$M`Z*!5{WDWZ)yq?uD?!$<KsdKXZ$XFWj?ouIJm1Af#jX;T2
+  1796→zT+(9U`=>JCEps|tTU5KF&V}zw3OG=Y!zvEeEw1NEv@lU~uXX!4|IOOl%K%j|hV;!~
+  1797→z2y)bT$dYnih-ip;-6vIs&Z4oz0HVnh@#)X_0X3d$!5X?h+*>G~BIb&4gLganUZ*^V
+  1798→zQ%oxJH;ie?KKhL<%GpLl=A=W-K5AaZ#SmP|y$oFj7L^OxAJ9++$8{)`E(AFd{08)+
+  1799→zjWvXJlTH<ih)FZ`6j^6B`m3Fe^d;)K-1aF<lIj9PBkGc3+HL@P4$gK-(@Irg?{PqJ
+  1800→z4>^Y%4w<R}N~*aFB(?eSBrN+c2Z9@Vw}Ml0yXbqz(?s96KCFTE35apPK<ElCNr`YZ
+  1801→z$nBigN2+sqKysAZ#aV;{RnAMzJzN862zqU^h{GOf9#onUhNp=%nxb}Rh(r;x-O`l-
+  1802→z*{0mdktvjF3t1vNgN`(F#OMc&@kcl6mMqmxI@bI?x|K^;*r5Z5Z13I!wqfZpcJ%7w
+  1803→zZPkj^c<*q?4llzS2)wyjrXTh_`+(%J*I4D4+yV`>Hg!@^qv9W$%0xwz7yC?B_Aq30
+  1804→zjq{W1rEti4O%%Dj5A<d{N;I0X>g+`FR3ncIV)0gx*B;+u0q+qG&7X@=2$V9G>!#aE
+  1805→z$zi(IN6tG+jfdl43&Ei~`gsWN{P<nqRGH1;dq$y}7#V?J1TEWVNmKOLf%c?n9FVdG
+  1806→zVk!V~dJOxq<nV&>`+iww3kUbv)@>Ks&b^n|id8FY#p*S-fcJ@bvnak+ST*u+5GA)t
+  1807→zjnj=j7jAEWZQ%g&v2FHo+0r3q7Vs%W&!w~igh~1a&i}+GHEqg)!XHP3$3>v{i$(MX
+  1808→z^Bfnl!=6Z@ATtV@g5Tz>`I65)QsMi>`w~9xtB6xIz<F*bn=yIwz^yGRs@k5*Xfs2A
+  1809→z1@vtRax7o50{e&S==<7pLy+wIvi6JStO=betlPqJY|HeC&V$%1x;`!AFCFmU-UBVq
+  1810→z?-3v%hknR`#b+i<N1RmvEg?5k3XZyr<ZEO#e1MN{2H<C#>Q|7Q9SW0@B0p`x_uvU4
+  1811→zMi`w{8(47o^rA?I$ayVsc)X9ZBV}i4MKevfm?ghhfu^?qS-~t_=loJzwqiL<XaP2N
+  1812→zQ$|gmES}qUPH#uoR7_sIhrk>;T?Y^1x&np2n9A$09Fgb9$d(iAl}9IdgP3qz>}$yt
+  1813→zZsk|WaZvm#)#b}q=()DS<Fa2hOP7~yKIwY8Nw<6FP9)-_(a9qMF%e03OD0s?1%onb
+  1814→zH64qV5E|t1Jo8Ce4D!ton53ue67y3Yr#0hU>svtU8DQ8<Gc;uCgh=klOvwvv2$_Gf
+  1815→zInqoHb1^=1_+sP1PU;aJRwZBZxsfN=8937mC<owarLb;{H2xg4QG?GDLTlMJhL1!}
+  1816→zomAn9w2No=sP12cImy$SO~~P1{w6`gM-dj;*xzDNEkJZ@K#DWRW)KwyrwmbUq`w7D
+  1817→zav)eQNJAAOhnHh(C9su4>;yg9M>lCnpr!MIiHDf%iwE|#OR@+B9wz98SIBO4k6)x+
+  1818→z_F=}XbAP1FHx;bfJm{<u6wln8x3Kjm^%3epagpyTB!5iMEzw25g`qFuOo}}44>6_P
+  1819→zA_Al4dJAm1J7V8T3dFg@*v@C|#O!Nx@mjzdddmUOrYNTaO%O_WbLIIhwd9jNh6}+A
+  1820→zbaq~w(n56R>|Sj*B?9y~r)C}VIWkA~By|GqVDNo+!PgRG_Qg@#BC})>T<@$pgg!4Y
+  1821→zst>cs9WEaxK4&E!G&aV(c%p8n9OrZ<w5EYEPXwbXX@>nc+j5Ul6>h(=KyxI^FxVwx
+  1822→zaw4Qb_L?r^C3*tRY3qN;sS2XA7_7pg`@Y0XJYFi$XE95mG~<!o9ufdgaAbolwQ?l%
+  1823→zhzie|K2H?s+}a1#>?t%}g!j4Zt?AkUg7mU^Jl4w|71g-O21qS#=Z9&+73u;8cRs>_
+  1824→z%4yVl!up)h=W9e~fYZ{sFg&M(&*#Qvf1^Mn6`9J^yHMwM9`f3)6ev0mlG5j1L8fSf
+  1825→zXnU&%==|avAHO|^SG@WsaQp<F-=tf)bd~MfeZV%`Np_19?`k(X;pVnw?Xj@0#=Gn#
+  1826→zc5o@)P-skelg-ykY!8iUoY@ZDklS3*k2lWxkOmz=lv^q#e=b*CP}qO}0pOM|WWLVL
+  1827→z>r-nljxd#Z2Iy1WZ#58&Pk|iq{N{!DXonPkUhylVd^9!=1nLr9=<Ck;P8)B!(Z=~g
+  1828→zE*u;+=jjmUHAbqi{6Guy(C;e8Oq=VG7BYqIYq6Xo_1o=2#-R2n*60Nk^#w_}zT%U^
+  1829→zMxc0wH<8ST2A1*7Bq+<4;6354EA1yg{f2$zOYgC*JHKgb)~*Kk5Z(kIP`qyLs->Ly
+  1830→z?4VZy+e^@n{ld6~g+sP>-3Hrm)JD8{#rsa=^F3Sx65dL86%IvCWC9|!@pTbt`Rq4^
+  1831→z&%uBs#u~XCMQtksn`vGPoE!3j%SyE1&K)no9#>3q!<l~fR5mO@S2YP8xj<FXAMO{e
+  1832→zDC5GX?FLyYII1xh-1mnL9<+UXcH6eCTeUY<u2^Y@u$Q!I{vcT~l9fjp1ouboVCfeN
+  1833→zs1G9d$`vbY<58P!<?2<i`=99NFOO7a0tuc)`<y`C^Ug=}OazuaweP_W?we>Y;^aq>
+  1834→zd)UX=qrA(pry?xGV4-wDs4b@CnH`xYoi$&ThMnKcyiT#qs6@s%ybnE>!)0Glfa8tz
+  1835→zXl=C$f*xE`T!V1#^Dj4d?bu;Ec5K&P<IUX#*xR09EYCewQhQliXcEtL&%Ge)`VAXw
+  1836→z-G+^}Z25|~nLL?EPd6YksU%uoqUwlXQX#7Cv^Q>x#<+NcdBL`C+p51-U4cH)@6T2(
+  1837→zz{O}jdz;=RN1t?q!wWdEcJ17OLE-YOMzgaaX)^-6h_Xf@OPZrpJKCVIgimBVR-$wK
+  1838→zq@KR@4jf-R=W=~{(LR8F_=NMxg$dwCrA<$IPZtHiU{zkz(H0L9@4Wlncb@PEbn#fi
+  1839→zCkpbJmhDjh)OAK@s({-A@KtwoO}XTYyv&&=Ya;uo(Pxqr#ARQW+6w+gVwrDfT75p2
+  1840→zV1DofxqqK?F$P5_JjXyKq&k1{fYbWJzJ&;XEJLauK)#>FWV;=WNoMW{VjktDALVj>
+  1841→z8WV0kkuO_rD^}t}p?=^X)|ele_qd>Y6`f&w+81FLNQJ*dg^hfOtZ8aaK=Dq}`eOcg
+  1842→z7klY)%p>NMU`Dp9eWy8<QG5Ya8>>6KX4!bXUp_<7x*-rYfFaFH#JKr_dc}(6T5ryi
+  1843→z<^araE6`i=)ZP~+i}|9DDy=BQ6p>X36L_{pb4bAsL|@n+>TH?Kao_P~zW=wlSn*5}
+  1844→z;6-r-o}dX{Qw|>Bi#gK4SD!KWsFq^yGCzIf@rC)a_<o!N82=&tmMor(TO-~cv+zY7
+  1845→z`TT9#ey&||)R>D-4|~A(t;@NrL|t>u7wu`2T-Ji<^oHK_*eY{pY+pr|JzD=&8!De<
+  1846→zbXw7$?E@Z9-J_cej{ZrPo>Au!bnOlp+j%dAH6C>?;13Z9u9K8QNOQB$Pt6^R?z3zg
+  1847→zXmNn9EsXLi@;kTp#`P8_q0b_#J{QRbqRpTOv|~HwDr_TSk+^g{pc!pB2S4O&N_#8N
+  1848→ze$xwMUQZiJKns!INo{Rgn`l4$nI<D!n>9cA!vv)a6tTv*$Pxs92(pCP#~ryLYnOy9
+  1849→zh~tr7mj1fIkwzf9R^9X~GJUoG1XTH3avY70Qhv7$a6&G1pesJ_)N_A^ueHzIIi~dC
+  1850→zNVnn!FD>%>`QXHsmU8P1eIXZ7P1iYXzKjFV@1~)hWaoN0TA;5PK+UBgn<F?XV@#n)
+  1851→z&2cHxA8wPtLI%OLP=GdM!RJ%4b0BKC1_nBz_0o7zN77;ci6a$;6h_p()IO+Jq1NlD
+  1852→z_^@+N`n9b10ng!M5}&nDa<_bGjrG%5q)N}W$k%nrSul7Y?K<>liuB^S6F>S#a5#7)
+  1853→z?%<w7cD?ntvHM>45w>OJwQcFbdc1)^IR6xO0eSh-h>fB#{X!UteX3M6u=U(Gly&2W
+  1854→zdiI$>_awuX;23!LnEh}$xU8XiJ`%%*AKnV$;}H3LM2^-T!8p9GaGAO2WnXcG*>kbo
+  1855→z)ZHeoa&tV4bvqx@osOEEP%y7P4Q>;UFO68!5GngLi~VI=tl?;Oa5R79!sjoq0QTKE
+  1856→z>c6LKhi<4UkLztNlgA=JkL)_U4f542oxG7KL6LfowgPXN_!@2Hs=auP^<(?oC*NY<
+  1857→z`}R9+#Tu-}QoL5hYe8)o^h2KxVI6Jt#8RTBkFU2E^gi(DV~^8o@`DHYdXJyt^Jw*>
+  1858→zg{0uQdM3AUJlRTxuN`OEz2ZuuC#;G^0Uq-t#A^*@R1<}akD{QE{A~v2HtGZ^HH>nz
+  1859→zRR@eioA6b4foPgPK(tQuxd^3Ul4zPY`Lq|g(XdAR6@X?FG7r6;$LrW_S6pE`w{6F3
+  1860→zd~6`@iAmd3eQT&^pfC@?Jgj9!oWEDtxOuZ}+_XvWCAfEZGiQJY&qca=zoTwQLomJR
+  1861→z8OU1(;xrO*G(N1NgrT~GJ{KO3BM4#cNS<m}GG@Sxp~L%EGeb@_8&)0i-2GGIXVJV^
+  1862→z!}eESZkY+?H9SArwshH2ynkD+djwZpcB%f9p6?y=dYABwr9aVtDw!bhfjGW*Ua@?c
+  1863→zZ8_m2-S0WL&;LB%|IC*X15(a@MqVJ>N+f$Qw>Fzs*VAdPl*B@@9OuF^^ljhXeRkQU
+  1864→zm#Ba8iRGy6D<j543*{wSPCo7M!2|nslTJ5S@RKh(lnJQG=0SdNgD%LXN#~Q<f*sg-
+  1865→z1>^&?&H*~Ie1omoun8Cc1;07Pn*o8G2Jdtrg;-cG)9eG})6IU2%MNXaw%k^%-D1n|
+  1866→z?BgFfti5%pof&hqiYnWv$bHUkEW;BwZ*Wjq;72Z<(%@Z<?IHz7>pwTI-<a65eH;3`
+  1867→z6INX4l*KPhOIK~Swd*(HNpr8PdJ&d4c<_o#9|=Zsf1-=Ls!*^|z~>SrDYCE(XJ8Vd
+  1868→zS~dtxE>L@z(>=S;=LOF7T3fSmi|s$S+ZJ|TF3!@Gn{D-)b-J_clg3<L3(B1r?2gW$
+  1869→zlp8kyrEc!@_}Jvcocfc;uI<==2e22!;lVk@dac@I8#Wzf`}g^r61g<Jp+OXqo3EAT
+  1870→zf_9!uaRKv_JIwgu3uxN+?cI%n=f`qezW!L<gkmRh9X+Ze+jc0EPid^VGs;{xyTiH8
+  1871→z%2IrY%a*Ug{@QH^cU=;8`d8b!qmPH^zX9b9;v7rH^EX_3c42-GY^7$)*BoQ3)~vC^
+  1872→z{1XZOV1H;9@CxzZ!M(Pym*XW?vr+6D?stgT<NPiZ_Juk5V%S?kiH_60cl(vlci~uN
+  1873→zt2Z61kt(<5tM4k--n)PdZW-(e_-OZ;b4e(opkNg!-Jv;c7?c_Gea<H??g7jV=4bhe
+  1874→zm3q<YJ|Nm@*+S3|B<EOLge2|B8IV~VB!!wc6b8UISVL*!b)~^)ZWb*yYQ+Yv-++QC
+  1875→zIl`b61RrsAg|ppZ2-ETO2?G!xVwqVW^Sg~9TBVs(G|X$$D<4+xA*s#=3crR9b5}Xd
+  1876→z%p~r}wF=E6QAjVbi9W_m7JADKlsFfwvqN)I22EB8m7%XkAC<qJ$joldH?M7`l3Wok
+  1877→zao}$m!%p-$D*4l&^u`|@EwrG$_6f9nB!{cFNsRmi)1;@;^UNp8Rsx*e{ppM>65Us<
+  1878→zkRfFVwP8~Nu?}u!2`%?hluRo*LMIsl$P;nRpMoc1Ce1Zf-6YF)!k=hkY>9~Eb{{Pn
+  1879→zI?j2wC(qHP*sReP>as@Nq8p;C@WdHIL&ix=1!dS=)~F@-xzGF_GmgJ2!%|gFacCH<
+  1880→zaWKF7SGZ!r-hTMYt@s2T-xRG_vf7sITWZ%>dlP%ujegrUEj!Mx+_ByE?B^#Mm><ut
+  1881→ztl0wdVBAd4^RqQm`blf<gWe6;8pr#{S(!es<c%}QsQJ_4;OaNI0L8j9UO6~q$~gCT
+  1882→zJ|tB1QRNLe`64)Dbfd~ez<aAz$3yL-AAE0@oL-{<sB3)bU}G^~t^c}>0nqM3=kQ2g
+  1883→zEO6SHtIH|{&(V1q-{+78ED_H+a~l9c-iSQB)W^yg#s<Nuq2>*4yfm?utC!iPO>6O*
+  1884→zY_EO(lYeYK`1afJni_9_`MQO#<<WoLP*Hmkr;?iMN{_aAGmbZJwj6h&Em^h%ugQ1l
+  1885→z=8J!-#GyVhER!T)i)`JE{;8`IZu0v05<d3PS`x#dHBCa;(=9;BccyKBmvtJ+b3lLQ
+  1886→zukA=q0|8^nrQL*w&uQhs<{PoWQ#r@^qkkIjpl!+n(gZjAKsAS*;QJW9$6B*?jjhFN
+  1887→z{%u!WX<Kpd7xsMb-&fa>`-{*yB^5R7nVMtbr{|8^e6;Pvd-y%Ocgv>hEqINIjXdcN
+  1888→ze4f8_J?iw#MtDU#Wz=|t6ke1;b94{qgG(R_O%z!8Lm1b{tvQd`tH!R>Q4wk?<(L!3
+  1889→zS<!e~heofGlzS}A4VSO7D@vW=QVJ0{a&77ATuDM}z9&GR@eGCcxNBCgvK6aV+a(wN
+  1890→z%oYydYK?1xUrUrkTq0LkV?nI6l9Ts~_@4QMldop`_U*UbyLRb)r~k6aV;!EeThr(E
+  1891→zDP*m#Y_r(%IlrwTs$5qAx;`j|{;gZL&JN)H-DMYF>>o187=W^JmD~dJ9dq&x4)Y6S
+  1892→z+f6z(l1wgF83>%s(|Qug1M*Xazzg!h1N&?l^4;&=cek6}^mM!U;>&b1iC;U)d<U^O
+  1893→z`}gj*&wu%g_MLBk*Ve4tpvBV7fMK*m(X{|TGex5z@?QVGUAyf@H@?0-;jxdhZ+-VW
+  1894→z_V#za$9C=7XRB8Fr<Ro82kdbZXq)F;l#N#*E8{8PnSI~holuwA$~Egft=eHTWl6H{
+  1895→zs{L5DY=!OLzuyk-*=0Ao#jWg@?tWL>e9UHBy?mwdSDrt+_(J=)_kYm7_l<Aa#$%7y
+  1896→zO(izKC%J=ruy(7~V8gG|6JbBeyj}0)eE60p2Pdrh<NC1f6SQgL&r<(xiRGvtbmsl-
+  1897→zeh;{xz5m}oX#e=uH`{T?on()D+@tjykhj0<-FDH>F1MAdF!%h;nMW(T@_FVcv+YFo
+  1898→zt4o^AoJT<Y5hc7Z@CF@k`tI9tkzMmzr`a#x{cd*kYhJ_F;>l$1?tS)?^DnRuop+v{
+  1899→z|J`re=HpJb{n)GQE62`w-`CW<?TT!<?tQnW?)`I~+dNwb`@C>)!ESQ;4eZyS@EE)F
+  1900→z@+<B2fA+Vw9WP#1;H1`zQ<4JFogoL4_PkMM3@c4;UP>1OGoZvpd;jhob~K(CAM~IH
+  1901→z+NPtAGF(;c8{htx{rmeqV(T_;K(6@hx!PrJztME?z+St~wNJ6z-~Lv%0&fyN{PE9V
+  1902→zet)9hn)pp9tU2@VIbg@0u*Dwyz%#KIR@;C7*MH%>|BgNRNl!3bR_$-z@He(+&t6<~
+  1903→z`3ejNVt6id9IOu<*l&+`*n{onH@&fa<?G+Dci^1XGX<Y-G(qEP4RaC5RT+ptpKH{3
+  1904→z$ju_3yiqBZw2Y+;)P2xp-$x_dM>BuBvJ7jpbH^@Q3Yl}YYQ-81XTiVcLrr;nzb11}
+  1905→zl(sTob_7VSN?#~JHy|j}5jJ8NHyw@dwd~qQe7LiRN6Rv#Rm9OGlq(a*7vhxTVBYG8
+  1906→z$jmFT`|AroH?x3kFgrh|FGJcj9{ypuQh{G@UVC#6xt%lQF2o$M%GehwJEhD&P~=9*
+  1907→z0Jt<}e>hhH?GdNSjVhx}_XdZa6swJ;R{-rz0es)Nzh@iHHW<7g&T|&D6o5Y0$#vA5
+  1908→zV}rdUnqF&@l~(C22E#P2WA@wxK-HKcPwh*>hajSRkq4sNG6HS74Hg9iqqJF@?|p<3
+  1909→zV%yt8ACp74ovk<p5!GE3jZ-R$mX3RxHEcAOb~2QGs`eDa-M2aH5{C}-IC&9VT8JE#
+  1910→z<4N4&0y&C;Ab!yMIYwWZ=aAeJWFY+l%#Fth$ebz2g`%m>rK)q8F8N#*qA#fu5e~o_
+  1911→z>o1nV+^dKP^0gq?leANU;6V{ZZUhCmPVHy7Nw>^a9a?Rh7LK(ip7DFAuVt5QyW9>h
+  1912→z!|Tn%%Mt0n6y{4*W!HRoZvFWtQJP}Ue4b(i(V_92W&m<hQLHDZU9K~gcCV2gwQizm
+  1913→zFR^yJ%HVR%TZ={RHwBr;W%(cuoX{zgC0Rc}+{E%5d^q^JB7G%iA4Aq*2dDLu2-)M=
+  1914→zFUU|hXR?uihrgi&(4PC<l?k{WzC1qOV8htQFKXmv|2wPqNjE}aZuueWJP#F{#*I<(
+  1915→zuNwFob={_;Y{SNV_L&bo(=Pbo$85!#Rd`LuPq6S)aC|+_L~6-nb39S84ZglU@oLww
+  1916→z<tta(*2^zbUcTmG6x@m-&vUWn;bnaZ8!4Ug|B9M}iPf020?uC;*|p>y3F)u7QeG@}
+  1917→zYA><PC1E7Cxu$vAhV+t%&@b6TJ`yGzt&Kl~{@lP-=UzBuYuBu`wd>Z~m6u&^JGXDs
+  1918→zpE8n{yS>M|KK#-%%7Y6BZPVt>cJ!9xY}=Jr+Md08@ctP4BpMzf_?W!C$zD~77~+J{
+  1919→z-x;WN-dDgL?KrDsgV?q^YTuVA{2}zYBHXGtNwox+BgD*+;f#q7hc#bC%K^BrS^%iB
+  1920→z$mxt}4jN``0<B}dmJ33UffTg1?y8;0v2d^OLrv>8uGc4OFF5~vya&p!TN~lOIC6Wv
+  1921→zK2YLZP&)bQ*RTWFH&<MKIhM{pt=H$bV9q+sVa-Q0J@P$=_YVj9>hDEhR|jZgKk+^p
+  1922→z?`1a~waNDG-Dg)^dYSKO#rgPrY(&Hb{3hMOa+3}lvAy9zkfd@V<z{R71StM!G7~Ms
+  1923→z3A%6hPFuBfnf>)&{h2-TQ4h17J9pap_3OoCrv3X5+SV(#+K;hFuluvVw10T>TW!_G
+  1924→z&FV1U*z+b36Z*#%Axrmu@UE+W7D*Pb*gPhKUy!?h*A9EpOI~EJIOlA;;DQV7S-<ss
+  1925→zd)GhzlWp95HQRe&FQ~}t1C9$XgK;Po3O1GL2gT<lCzT~XAx7&-$DOG8z3|dYZ5jHi
+  1926→zalp?-V(sTX`;JAC4P#ik+z#yDubY`?o%MKo+Ebro*SX%Qws!R@v57tV_S@&b^c6ej
+  1927→zWv{Z2eek`u{+MfEvG>@<b!+V!S3AiryZj2f<gzQ#CfVwpO08F}Cn4SYU6Fq>B0%)s
+  1928→zLdSzH*8ZE6ygYIC(09BL+=qUwS-IT)@HMZtr#$8H_Mwk_-0pRcyV~9EdS840fBcJX
+  1929→ze7*7S{=uH{tf$$=qffE}2lpWXFS=MKB-c7HE86FLdC%EO0oLDt9Bq$c{Uo9Ah_GW1
+  1930→z9N4$d7WVG8C!KYco%O`W+G(eqW?POq%KgCZJ^Sr*|MNwA!(aZbz5Q)(war+&y?gg!
+  1931→zyJKV;G{F9~`C|V<gqu&?>Mh%*1Bd@6fPThD4sn<#RCN~PM|EJ&9(&ZIA8v1X<6qd0
+  1932→z?K|vtce;mt`&+zOy*57D&Drn^&J;QaP}8M#X?=^C;v>&z_|zo=GW*@(^UgnMJ?VsF
+  1933→zaIU_=Zh!mR*t)g8|9<?F3+!Ls{cm>mOU?lgHgugY0zJoJeVlji&TV$byWGkC<y~*J
+  1934→zr8sY2`?|lhb6<L{t;M;#aA==jlyMQ>we?DS*drfnuYcWZZ0*{0_Uvap&%X7Y@7jCb
+  1935→z^)_3L{eI7TKfpfosgK+0wHv&j=$HO89oBQ{62$M=Z6Eo_d+ly_xr6-=&WF3+<z85;
+  1936→zm9}I#=ZObPj@4@cg03H&2hIWWX)=65yqsVX-;p_3sX&QVA?BR6676Um2vu(5yQ1YQ
+  1937→zSK%79*LH8e)PC!QFSDE6@CG=4UTfd{<~MB3#*Mh3@Ds%hiTKRJjBJy+)1(%gq9z0o
+  1938→z^rj>*ta+z1W0RCCXspy0?aYI!%!=Te`x#9%o2rPVSYvzVGeDpy4~u4J&z)bxD#|b$
+  1939→zlG<IlV<igGgV^Vx+QZfw$XRSbS)fc#M_R;)9IP^omT`|HdNw`%QcHjKh4F2Fq#LCK
+  1940→z=k#mW6eX^UN92=Nng(({BSBQratgAGQ*<G9B5fgb3Q10^W1X7=D2%4GF(o(b!}=Dq
+  1941→zln}ZXk}m`hdq94yQ<7*T&9&C9kKN_GN!RAw%|Q6chDc46<Oz)&$UTzwLN2CpUv`f7
+  1942→z8$LYrIw8=e3qqSCe+a{>m(;W;$Jy>2tZBv|yFF^Q=aRtwrS2Zjr{~>R3xD%mI#Dp!
+  1943→z+8Ri&8+<gdl_2%7%u9ll+zP|`&%jA4QRG}kXptPQ#k>+Q&=z5BKgrM>Zs#wsc=(?b
+  1944→zEr+xW&&w-p>E2~_pKCwae(9tq+D|XI7#uuvFJGp8$WPHRky=E)I@UHm)TJrSw`3G9
+  1945→zrPqm+I4*Grt!eVSl3$C<+RfrKck@Gt@%kD&oJXHj$+S7cWpAU@0dLFO9&V<o9q*-n
+  1946→zF)ANyEq7+g{Arh>GTYLchD_*XE^8g0Nn<P=fjZX&qWYyiB`0LBoXaB=%5+H&d-}c2
+  1947→zAPCq2noo`awd~CaaR0bpT70@?&#wJ;>@`oo>y;1LXWsuJ+q35qTfSno9a=bmMixNC
+  1948→z%yIuPtn4E;!LK(tcyIx)Y1iA9<BqfK+pe(vc<sF$`!IhI?N<YjqkJTk>@)Cb8#7G#
+  1949→zLv{vazX?oS_9HRqMT{j13<}`HmbMkZ7zmW44U6R)?eiiXi+hxNCO!F6BawN!uXjHM
+  1950→za5Rtp=gb?A+NA3cKOvRB*lX7o$SoXkZL25+;_=>L1zsB;cl-%<5V^Kpxz+gfPr5dM
+  1951→z%pcz?5tQ+BF?IHq7sHfs#Pkincso-Jdn_=lHAIa&CM@groIt?T^3V*ix`{U5vd2s&
+  1952→z*Q>xV%Ro&Otd_h)_5=mh=rNg{*OsHVY_T2Nw%L_eT%oVW@=nr^8V^O(<^#;JfcVWv
+  1953→zA7h(0Z?Ox0`V(A}mW#{3OsaE}Jy6zEt`dF@*}JIjITQOc+EtCl<cF;59NzbD#&|Ej
+  1954→z@It)b-XGk|&?_N2s(1hV5m+sSgMkVL6wd+cQqT9wI>u}OdHHMsg->#v5T2}jQas2{
+  1955→z#sT~&;`=}FA$#jTzSG|K-uK&=KKFUsux^dr`c}8F*Zje`_A3wk72CIcn?7Z;dd+H`
+  1956→zpuF+KdgZEBo=-PI_&ru;D_1VZoBNfvdKJG%3&WxB&_VFnp+k1X75o!N(+$YoyLPLO
+  1957→zeBxm@c_(uvVppwRg?hCwFhM8VaSh<dGr>jstH4{0W97<~K27lEjiyIF{8#O5Z~a?)
+  1958→z`MGD?)vu0=%z*>Qy9T7C`t1?FP?LP+rGWnPqmUfW!F_w}%m>`xUipd_+v%s@(Dv=w
+  1959→zYybAX58FH5@h|pYpZTno<<7Ugm2%(omS@=B9T(e%HEZpx$35EK{C9t8FMiSUH4nTI
+  1960→zvSQ_GwYg*|UZ`PAtI>zmYu4Br@K<48c?Vk?K>cQK4x@j|@uH3|^mqed8F;JoXNUY#
+  1961→z+EuGo>hHbV1%Pq<#2%h}8Al#J`E$kPSKuOj5Kr9B+jn5U`m_$~yC36W+zPA{`?C^x
+  1962→z^<8Y}>&i9j^rx^ZA@hZ%ZeVG0eUkXwVcyi>T&`M;F<`y;1-E>mNrsPsPxpMGz~Abb
+  1963→zZh9U*u+N_U^xw2szvlPsj(55p@~^OW{PVxtpS|JD_787;r(Jf*C3e?4-PT_Hs&nkD
+  1964→zUwe{WdCAYv&Kl%HRz10J-OxX*H`je7=7BdQ*&I(U{kD1;<_G=a4Qck5pJ-gQ7JXd1
+  1965→z2C@GAZ0sZVi`Ia-(2u1!r~Ev^Jnh+oejm2|2M=IB90qr(tzW;&)~>;RW1Def+6U`0
+  1966→z`?w-<uEKf3_2NfpImhfEw?C;XSL3|F`tWA<O026sVvIf4c*+K7E)Uw-XP<5Nxci-L
+  1967→z_m1uM@|VBT-u143v1?xaWPA3ro{If>Z(G>E6U*c4!y9$HfyhiN)~vU$ef6vM!|(mj
+  1968→zHf&sP54hhwVOxW91Lq?NEY##7yZhblVw={lwQblh=Y8T+whDW8%jS(5uTBb`qmVF1
+  1969→zt5z<twQHB#x;4w;$6Ub98~cR*q#PGx{h2u4kStm1dw(V7e<k)h*KHa9l$Pz5IaGJh
+  1970→z41deVy~Oi*74}#AGh-2*C$11u8oC2wBt<OOkyj_}MqQ_9?-l(^v2Oh2;qL8Q?W`w1
+  1971→z!_GM4rgqGhqwTe?{X@I?&2O$R;nk&-eU9~3#|M-SsKu%$dJHACuOok4r?0k>hyRw7
+  1972→zM{LyWi#8WV9jbG@bgAd&++fH$im`FUXFIK}u%k$eF6EFk&v5YE^B<`?YW{4Gej$Cp
+  1973→zbf#SPQvBq~l=f&#n%hcth<*j4PtTKaM8{`AGdk!|IJn<=@CRvmuxQi5wpuC~9Q@RW
+  1974→zIBsJZStJuV7yhEIB^lsxI8bO`1m9!2&6|-^l>_6T96BjQ6&N3aWPhVCr5()ehZ<4N
+  1975→zK7Bb?JtR9V9YyP}oP_5gnkhK>Lr<Hn$fxF`anHx`k>@`5d(O<Oy4u7GL*fu}@D~Mb
+  1976→zQAP5+?eGA8GT<;jI)l3TP^2u>#sXbpd>r89TxvcQlc2&gf``L%uqXbDD*u61ef9o&
+  1977→zTxxm1>eUQ}CJ7m;m3zGgd(OcY6X0#c^@z}XB3B-P5-EG`k2d{kpJQ_=^V3yFIuCW6
+  1978→zi?b#kG&1E<pN*fBu@5VNxj`qg@8kL`^&dP@F2x?&w0w)*{*?RJm6z_o`tz6Cc)sSh
+  1979→z&S-CN{9OB}bKi3VLT`1*I`W4+My5@19<L3oSlTE<l%CwEmqyMwWR3Qn<F)7E!93nu
+  1980→zZ<|N7DccyQI*-a}HNOM4``fy<oMjyGBRTzwVQlZCY$5Z9doNog$Md>fbsYN9_@HMj
+  1981→zp*|IE^Z7Atd-i}kWd7){Ao7Rvhab&6?Rn%6WWI($G+tjWv&$~N%r>2TM?3nY)A1Gy
+  1982→z?P3gk4X<;DBqHkq?p0n(Hg4K%dw1`)1AF)D`=NbafEc4rcNDa_CrjE<qd(52?tH}r
+  1983→z{JA3x)gDK0!w;S}$}J^~tP1=&poK(y=gF-j#uCtL6!F-Gf+CJGnZ5sc<`R-*q`z?Z
+  1984→zo`~lzWRFG}KDSWrF-j-DXZ9l{l%7O|dZ<S5m^s)V);(_<Gs6jV%0EPd9^y6Y9=y+H
+  1985→zfBA_ze&@7uPoenQBhSb8!s`&n_kcV2Nj$uF@qOs|JtAUS2N)Oe{Lxxyh8z$W*V^&{
+  1986→zsbAhVKYR}22uK<R+_FyKIXuAOJ(%SW)(m4`^h4Eu+9)Dt&E$L_j4?fKk6iwq#}B=h
+  1987→z$DtUFk4NTKA-g>3ZVHjDXG4Wjj=pc1+Ye>sgZWisRPvF(#CGi1p+9ZbwS;W#b$1I*
+  1988→z7{O~3Kj6gc%9U4Ks=dcpu0PviSNpQDAEBsSKfFJFxN~yI(GTV00Zo8eA0lxPhsz1J
+  1989→zsv3P|pZLjRzTfBfEb@l-$ObYo8cDIe+Ud;{h~-q4+A<I*YhdE{7+v5qIf?Xv$d2yk
+  1990→z8*13T^yRPH3x4}W_VlOyhCTC{&#=cm?lJbPXFSWk{<Uw|2`3zHPkz$l?ZlH$v|U$T
+  1991→zX4@~j%=Yf$pMtHl-Me<!j>|8%g9ni<Za%U79ammq+b;d7ZM*D3+p}YrE#nv0!@q!b
+  1992→zmn>gp?|A!L?ST(`xIOZ*PqI&a`t!DY_0e_^Z|qm$%{=?FbL&>yaoOd_eT5ysoBtIn
+  1993→z_#b3)T2Ld`GQ6oiyl~idT!B7adLi1o0B^9jt9`vuTG(&<cki<6UFSM>yW8H<Zg|>t
+  1994→zZDHSjJFsV$ZzSY9uy>E`+l?1WyrGbb3cLQyb>AL4_Sj?X!4G+`Z8`cV`_{L=Z_jz&
+  1995→z+4i)jJ;k2)yyw~zp72CF_Z6?QJ$v`r9d30Cd)99~&kpV1Y0H=Fw^OclH9P(E)9myc
+  1996→z-N5$m+^KfhE#64cjU$X<+vS(qwu^siTXAqs(IwqL^53RneK5A2S6pGc5Wi#@=6c6Y
+  1997→z@GiDp+jqwNTwr_oCwaU>!tbHbPB48^ZTn>x!M7DT4%+?&-eg*?e%jJC_U-R{*B<$}
+  1998→zC)vXvahCnj>;A%4VD9(q+=Um6m*^h^@P^8Py?br@<(FViFH+xmGfdw_#<}OsIppIF
+  1999→z+Pzr+?U!Gy`QL>;aqjpXUK$L0qnZa#-UWSv?hbdjy}kV9ziUSybCiAVv!AyIJ@irb
+  2000→zThIJWJNvg^V9)x^XV~K(f0ljbzyHUsezlYA#b-aye(9d~#8|G-%^TjF<aa9U-?bfk
+
+[showing lines 1-2000 of 35821; use offset=2001 with limit to continue reading]
