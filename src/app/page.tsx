@@ -5,7 +5,8 @@ import { Download, FileCode, FileJson, FileText, Package, FolderDown, CheckCircl
 const fixFiles = [
   { name: 'APPLY-GUIDE.md', desc: 'Panduan lengkap langkah demi langkah (BACA INI DULU)', icon: FileText, href: '/kiwul-fixes/APPLY-GUIDE.md', size: '7.4 KB' },
   { name: 'kiwul-fixes-bundle.zip', desc: 'SEMUA file fix (workflow + proxy + route) dalam satu ZIP', icon: Package, href: '/kiwul-fixes/kiwul-fixes-bundle.zip', size: '74 KB', highlight: true },
-  { name: 'generate-prompts.cjs', desc: 'Script auto-generate prompt untuk 60 scene (Pocong Salah Alamat COD) - BARU', icon: FileCode, href: '/kiwul-fixes/generate-prompts.cjs', size: '36 KB', highlight: true },
+  { name: 'generate-prompts.cjs', desc: 'Script auto-generate prompt V1 untuk 60 scene (Pocong Salah Alamat COD)', icon: FileCode, href: '/kiwul-fixes/generate-prompts.cjs', size: '36 KB' },
+  { name: 'generate-prompts-v2.cjs', desc: 'Script V2 — pose lebih natural + camera angle per scene (RECOMMENDED)', icon: FileCode, href: '/kiwul-fixes/generate-prompts-v2.cjs', size: '48 KB', highlight: true },
   { name: 'TEMPLATE-PROMPTS.md', desc: 'Dokumentasi 7 template prompt + tips konsistensi visual', icon: FileText, href: '/kiwul-fixes/TEMPLATE-PROMPTS.md', size: '8 KB' },
   { name: 'image_qwen_image_edit_2509.json', desc: 'Workflow ComfyUI baru (FP8, tanpa AuraFlow)', icon: FileJson, href: '/kiwul-fixes/image_qwen_image_edit_2509.json', size: '4.3 KB' },
   { name: 'image-route.ts', desc: 'File route.ts LENGKAP (sudah +negative prompt anti-stacking)', icon: FileCode, href: '/kiwul-fixes/image-route.ts', size: '18.6 KB' },
