@@ -1,0 +1,963 @@
+{
+  "project": {
+    "title": "Pocong Salah Alamat COD",
+    "language": "id",
+    "aspect_ratio": "16:9",
+    "resolution": "1920x1080",
+    "duration_seconds": 180,
+    "style": "cinematic semi-realistic 2D illustration",
+    "target_platform": "youtube"
+  },
+  "characters": [
+    {
+      "character_id": "char_001",
+      "name": "Arman",
+      "role": "Kurir COD yang penakut tapi bertanggung jawab",
+      "age": "27",
+      "personality": "Baik hati, mudah panik, suka ngomel kecil, tetapi tetap bertanggung jawab menyelesaikan pekerjaan.",
+      "visual_style": "cinematic semi-realistic 2D illustration",
+      "face_description": "Indonesian young adult male face, warm medium-brown skin, oval face, expressive tired eyes, thick eyebrows, slightly rounded nose, faint mustache shadow, friendly but anxious look",
+      "hair_description": "Short black hair, slightly messy under a dark delivery cap, neat sideburns",
+      "outfit_description": "Delivery courier jacket with reflective stripes, plain t-shirt underneath, cargo pants, sneakers, small sling delivery bag",
+      "outfit_color": "dark green courier jacket with orange reflective accents, black pants, black shoes",
+      "body_proportion": "average height, slim but slightly tired build, natural human proportions",
+      "silhouette": "slim courier silhouette with cap, jacket, sling bag, and slightly hunched nervous posture",
+      "expression_signature": "wide anxious eyes, awkward half-smile, lips slightly open as if about to complain",
+      "reference_image_prompt": "Full body character reference of Arman, 27, delivery courier, standing in a neutral pose facing the camera, clear face, clear hairstyle, clear outfit, dark green courier jacket with orange reflective accents, black pants, black shoes, average height slim but slightly tired build, slim courier silhouette with cap jacket sling bag and slightly hunched nervous posture, wide anxious eyes and awkward half-smile, cinematic semi-realistic 2D illustration, simple plain background, clean lighting, centered composition, high detail, consistent character design, no other people.",
+      "reference_negative_prompt": "multiple people, extra character, cropped body, half body, hidden face, different outfit, inconsistent clothing color, inconsistent hairstyle, wrong age, wrong body shape, blurry, low quality, distorted hands, extra fingers, text, watermark, logo, busy background, props covering body, mixed visual style",
+      "consistency_notes": "Selalu pertahankan wajah Indonesia muda, rambut hitam pendek, topi kurir gelap, jaket hijau tua aksen oranye, celana hitam, tas selempang, tubuh ramping, dan ekspresi panik canggung."
+    },
+    {
+      "character_id": "char_002",
+      "name": "Pak Karto",
+      "role": "Pocong tua yang salah menerima paket COD",
+      "age": "65 saat meninggal",
+      "personality": "Cerewet, mudah tersinggung, lucu, merasa dirinya pelanggan yang benar, namun sebenarnya kesepian.",
+      "visual_style": "cinematic semi-realistic 2D illustration",
+      "face_description": "Elderly Indonesian male ghost face, pale grayish skin, wrinkled cheeks, tired eyes, thin eyebrows, harmless grumpy expression, not grotesque",
+      "hair_description": "Mostly hidden under white burial cloth wrapping, a few thin gray hair strands visible near the forehead",
+      "outfit_description": "Traditional white pocong burial shroud tied above the head and near the feet, slightly dusty but clean, simple rope knots",
+      "outfit_color": "aged white cloth with faint gray dust stains",
+      "body_proportion": "short elderly body proportion wrapped tightly, narrow shoulders, small rounded frame",
+      "silhouette": "classic upright pocong silhouette with tied cloth above head and bundled feet",
+      "expression_signature": "grumpy squinting eyes, raised brow, mouth slightly pursed as if complaining",
+      "reference_image_prompt": "Full body character reference of Pak Karto, 65, elderly Indonesian pocong ghost, standing in a neutral pose facing the camera, clear face, clear hairstyle mostly hidden under white burial cloth with a few thin gray hair strands, clear outfit, aged white pocong burial shroud with faint gray dust stains and simple rope knots, short elderly wrapped body proportion, classic upright pocong silhouette with tied cloth above head and bundled feet, grumpy squinting eyes and raised brow, cinematic semi-realistic 2D illustration, simple plain background, clean lighting, centered composition, high detail, consistent character design, no other people.",
+      "reference_negative_prompt": "multiple people, extra character, cropped body, half body, hidden face, different outfit, inconsistent clothing color, inconsistent hairstyle, wrong age, wrong body shape, blurry, low quality, distorted hands, extra fingers, text, watermark, logo, busy background, props covering body, mixed visual style",
+      "consistency_notes": "Selalu pertahankan kain kafan putih kusam, ikatan pocong di kepala dan kaki, tubuh pendek tua, wajah pucat keriput, ekspresi cerewet, tanpa desain menyeramkan berlebihan."
+    },
+    {
+      "character_id": "char_003",
+      "name": "Bowo",
+      "role": "Sahabat Arman sekaligus admin ekspedisi yang sok pintar",
+      "age": "29",
+      "personality": "Banyak bicara, sok logis, suka menertawakan Arman, tetapi sebenarnya lebih penakut.",
+      "visual_style": "cinematic semi-realistic 2D illustration",
+      "face_description": "Indonesian young adult male face, round face, tan skin, small curious eyes, thick lips, playful smirk, soft cheeks",
+      "hair_description": "Short wavy black hair, slightly fluffy, no hat",
+      "outfit_description": "Casual short-sleeve shirt, simple wristwatch, jeans, sandals",
+      "outfit_color": "mustard yellow shirt, faded blue jeans, brown sandals",
+      "body_proportion": "slightly short and chubby build, relaxed posture",
+      "silhouette": "rounded friendly silhouette with short neck, casual shirt, and chubby arms",
+      "expression_signature": "smug grin that quickly turns into terrified open-mouth panic",
+      "reference_image_prompt": "Full body character reference of Bowo, 29, courier office admin and Arman's friend, standing in a neutral pose facing the camera, clear face, clear hairstyle, clear outfit, mustard yellow short-sleeve shirt, faded blue jeans, brown sandals, slightly short and chubby build, rounded friendly silhouette with casual shirt and chubby arms, smug grin that can turn nervous, cinematic semi-realistic 2D illustration, simple plain background, clean lighting, centered composition, high detail, consistent character design, no other people.",
+      "reference_negative_prompt": "multiple people, extra character, cropped body, half body, hidden face, different outfit, inconsistent clothing color, inconsistent hairstyle, wrong age, wrong body shape, blurry, low quality, distorted hands, extra fingers, text, watermark, logo, busy background, props covering body, mixed visual style",
+      "consistency_notes": "Selalu pertahankan wajah bulat, rambut hitam pendek bergelombang, kemeja mustard, jeans biru pudar, sandal cokelat, tubuh agak pendek dan chubby, ekspresi sok percaya diri."
+    },
+    {
+      "character_id": "char_004",
+      "name": "Maya",
+      "role": "Seller online misterius yang ternyata menipu manusia dan hantu",
+      "age": "32",
+      "personality": "Licik, manis di depan, pintar menghindar, namun akhirnya takut saat kebohongannya terbongkar.",
+      "visual_style": "cinematic semi-realistic 2D illustration",
+      "face_description": "Indonesian adult woman face, fair medium skin, sharp oval face, neat eyebrows, confident eyes, small pointed nose, controlled smile",
+      "hair_description": "Long straight black hair tied in a low ponytail, neat side part",
+      "outfit_description": "Online shop seller blouse, long skirt, simple flats, small phone pouch",
+      "outfit_color": "maroon blouse, dark gray long skirt, black flats",
+      "body_proportion": "average height, slim elegant build, upright confident posture",
+      "silhouette": "neat slim businesslike silhouette with ponytail and long skirt",
+      "expression_signature": "polite fake smile with calculating eyes",
+      "reference_image_prompt": "Full body character reference of Maya, 32, mysterious online shop seller, standing in a neutral pose facing the camera, clear face, clear hairstyle, clear outfit, maroon blouse, dark gray long skirt, black flats, average height slim elegant build, neat slim businesslike silhouette with ponytail and long skirt, polite fake smile with calculating eyes, cinematic semi-realistic 2D illustration, simple plain background, clean lighting, centered composition, high detail, consistent character design, no other people.",
+      "reference_negative_prompt": "multiple people, extra character, cropped body, half body, hidden face, different outfit, inconsistent clothing color, inconsistent hairstyle, wrong age, wrong body shape, blurry, low quality, distorted hands, extra fingers, text, watermark, logo, busy background, props covering body, mixed visual style",
+      "consistency_notes": "Selalu pertahankan wajah oval tajam, rambut hitam panjang dikuncir rendah, blus maroon, rok panjang abu gelap, postur ramping tegap, ekspresi senyum palsu."
+    }
+  ],
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "scene_number": 1,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Malam itu, Arman sadar paketnya bukan dikirim ke manusia.",
+      "background_prompt": "A quiet Indonesian village road at midnight with a small empty house gate, wet asphalt, dim streetlamp, delivery package on the ground, eerie mist, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman on the left frozen in fear while holding a delivery package and phone. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto pocong on the right leaning forward from the gate with a grumpy complaining face. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in with slight handheld shake, streetlamp flickers subtly, mist drifts slowly, characters make tiny startled head movements.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_002",
+      "scene_number": 2,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Di aplikasi tertulis, alamatnya cuma gang buntu dekat makam.",
+      "background_prompt": "A courier smartphone screen glow on a scooter handlebar, dark village alley entrance, small delivery box, distant cemetery wall, dim blue night lighting, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman sits on his parked scooter staring at his phone with anxious wide eyes, one hand gripping the delivery box. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom toward the phone and Arman's nervous face, faint rain movement, tiny hand tremble.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_003",
+      "scene_number": 3,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Arman pikir ini cuma order iseng anak kampung.",
+      "background_prompt": "A narrow village alley at night with closed wooden doors, puddles, laundry lines, a small courier package on a scooter seat, moody streetlight, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman walks carefully into the alley while pretending to be brave, holding the package under one arm and phone flashlight forward. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Gentle forward tracking, phone light shakes slightly, curtains move in a faint wind.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_004",
+      "scene_number": 4,
+      "duration": 3,
+      "characters_in_scene": [],
+      "vo": "Tapi makin masuk gang, sinyal HP-nya hilang total.",
+      "background_prompt": "A dead-end village alley with old walls, weak streetlamp, phone signal symbol on a glowing screen placed on a scooter handlebar, foggy midnight atmosphere, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final cinematic environment scene using Figure 1 as the background. Keep the exact visual style as: cinematic semi-realistic 2D illustration. No characters, no people, no silhouettes. Emphasize the scene action through objects and atmosphere: the phone screen on the scooter shows no signal while the package label glows faintly under the streetlamp. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in on the phone and package, fog slides across the ground, light buzzes softly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_005",
+      "scene_number": 5,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Lalu paket itu bergetar seperti ada yang mengetuk dari dalam.",
+      "background_prompt": "A close view of a sealed cardboard delivery package on wet ground near a rusty gate, dim streetlamp, spooky village night, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman crouches near the package, recoiling with both hands raised as the box slightly shakes on the ground. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Small package vibration, Arman flinches, slow push in.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_006",
+      "scene_number": 6,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Arman nyaris kabur, sampai terdengar suara serak memanggil namanya.",
+      "background_prompt": "A rusty gate in front of an abandoned small house, dark porch, swaying plants, wet ground, dim yellow streetlamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman turns his head sharply toward the gate, one foot stepping backward, package clutched tight against his chest. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan from Arman to the gate, plants sway lightly, Arman's shoulders tense.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_007",
+      "scene_number": 7,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Dari balik pagar, muncul pocong tua yang kelihatan sangat tersinggung.",
+      "background_prompt": "An old abandoned house gate half open, mossy wall, fog at ground level, dim porch light, midnight village atmosphere, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto pocong stands just behind the gate, leaning forward with grumpy squinting eyes as if ready to complain. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, fog curls around the gate, Pak Karto makes a small grumpy head tilt.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_008",
+      "scene_number": 8,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Bukannya menakuti, pocong itu malah minta tanda terima.",
+      "background_prompt": "A small empty house porch with rusty gate, wet tiles, delivery package between gate and alley, dim streetlamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands stiff on the left holding his phone like a shield. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto on the right points grumpily toward the delivery package with bundled cloth hands. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slight handheld wobble, Arman blinks nervously, Pak Karto makes a small pointing movement.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_009",
+      "scene_number": 9,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Arman gemetar, tapi aplikasi memaksa tombol selesai ditekan.",
+      "background_prompt": "A smartphone close-up showing a delivery confirmation page on a dark alley background, wet ground and cardboard box nearby, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman holds the phone with trembling hands, his anxious face lit by the screen as he hesitates to press confirmation. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom onto the trembling phone, tiny finger movement, screen glow flickers.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_010",
+      "scene_number": 10,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Saat paket dibuka, isinya speaker berbentuk kepala setan.",
+      "background_prompt": "A dim porch floor with an opened cardboard package and a strange demon-head-shaped speaker inside, eerie but comedic lighting, old gate background, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman crouches left with horrified confused expression pointing at the opened box. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto leans right staring angrily at the speaker like a disappointed customer. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in on the opened box, subtle flicker from the speaker, both characters make tiny reaction movements.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_011",
+      "scene_number": 11,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto kecewa, karena yang dia pesan cuma radio dangdut.",
+      "background_prompt": "An old empty porch with opened cardboard box, demon-head speaker on cracked tiles, faint moonlight and mist, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands beside the opened package with grumpy disappointment, looking down at the wrong item like an angry customer. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow tilt from package to Pak Karto's annoyed face, cloth edges flutter slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_012",
+      "scene_number": 12,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Arman bingung, sejak kapan pocong bisa belanja online.",
+      "background_prompt": "A midnight village porch near a rusty gate, opened package on the floor, phone screen glowing, misty background, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left scratching his head in disbelief while holding the delivery phone. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right with offended posture as if explaining himself. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Subtle push in, Arman tilts his head, Pak Karto gives a tiny offended nod.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_013",
+      "scene_number": 13,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pocong itu bilang, kuburan sekarang sudah ada Wi-Fi.",
+      "background_prompt": "A humorous spooky cemetery corner beyond a village wall, small router box mounted near a tree, misty graves, moonlight, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto proudly stands near the gate pointing toward the direction of the cemetery Wi-Fi with a smug grumpy face. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan toward the faint cemetery wall, Pak Karto makes a small proud head lift.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_014",
+      "scene_number": 14,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Masalahnya, barang salah alamat ini tidak bisa diretur biasa.",
+      "background_prompt": "A dark village alley with return label paper, cardboard box, and courier bag on wet ground, dim light, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman kneels on the wet ground trying to scan a return label, his face increasingly worried. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom on the failed scan, phone glow pulses, Arman's hand trembles.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_015",
+      "scene_number": 15,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Setiap Arman menekan refund, layar HP berubah jadi tulisan kafan.",
+      "background_prompt": "A spooky porch with opened package, phone screen glowing unnaturally, rusty gate and damp tiles, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman on the left recoils while holding the phone toward Pak Karto. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto on the right squints at the phone like an impatient customer. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in on the phone, ghostly glow pulses, Arman flinches subtly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_016",
+      "scene_number": 16,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003"
+      ],
+      "vo": "Arman menelepon Bowo, satu-satunya teman yang sok berani.",
+      "background_prompt": "A small messy courier office at night, desk with parcels, computer monitor, fluorescent light, snack wrappers, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Bowo sits at the courier office desk answering a phone call with smug confidence, one hand holding a snack. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, fluorescent light flickers gently, Bowo gives a tiny confident nod.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_017",
+      "scene_number": 17,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003"
+      ],
+      "vo": "Bowo tertawa, sampai dengar suara pocong ikut ngomel.",
+      "background_prompt": "A messy courier office with parcels and a speakerphone on the desk, dim fluorescent night lighting, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Bowo leans close to the phone with a smug grin turning into open-mouth fear. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Quick subtle push in, Bowo's expression shifts, monitor light flickers.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_018",
+      "scene_number": 18,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Pak Karto menuntut barangnya diganti malam itu juga.",
+      "background_prompt": "A village alley in front of an abandoned house gate, opened package on wet ground, faint cemetery wall behind, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left holding phone and package receipt, sweating nervously. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right with stern customer posture, bundled cloth pointed toward the package. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan between both characters, mist drifts, Pak Karto makes a tiny demanding nod.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_019",
+      "scene_number": 19,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Kalau tidak, rating Arman katanya akan dihantui selamanya.",
+      "background_prompt": "A smartphone screen showing a delivery rating interface glowing ominously beside a courier bag, dark alley background, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman stares at the phone in despair, holding it close to his face as his shoulders slump. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom toward the rating screen, Arman's hand shakes slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_020",
+      "scene_number": 20,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Bowo datang membawa solusi paling bodoh: pura-pura jadi customer service.",
+      "background_prompt": "A village alley entrance with a parked scooter, courier bag, fog, dim streetlamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left looking desperate while holding the wrong package. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right arriving confidently with a clipboard and fake professional pose. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slight handheld push in, Bowo raises the clipboard slightly, Arman exhales nervously.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_021",
+      "scene_number": 21,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003",
+        "char_002"
+      ],
+      "vo": "Tapi Pak Karto langsung tahu, karena Bowo pakai sandal jepit.",
+      "background_prompt": "A damp village porch with opened gate, wrong package on floor, comedic spooky lighting, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Bowo stands left pretending professional but visibly trembling. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right looking down judgmentally at Bowo's sandals. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow tilt down to sandals then back up, Bowo shifts nervously, Pak Karto squints.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_022",
+      "scene_number": 22,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003",
+        "char_002"
+      ],
+      "vo": "Malam makin aneh ketika speaker setan itu menyala sendiri.",
+      "background_prompt": "A dark old porch with demon-head speaker glowing inside opened package, rusty gate, fog, wet floor, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2, 3, and 4 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from the reference figures. Create new acting poses for each character according to the scene action: Arman recoils left, Bowo hides partly behind him in the middle, Pak Karto leans from the right toward the glowing speaker, all faces clearly separated. Place all characters clearly without overlapping faces. Blend them naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in toward the glowing speaker, tiny character flinches, speaker light pulses.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_023",
+      "scene_number": 23,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Dari speaker keluar suara perempuan, manis tapi mencurigakan.",
+      "background_prompt": "A demon-head speaker inside a cardboard box on a dark porch floor, phone and receipts scattered nearby, eerie glow, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman crouches left holding the speaker at a distance with both hands. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right leaning in with scared curiosity. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Gentle zoom on the speaker, glow pulses, Arman and Bowo make tiny startled movements.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_024",
+      "scene_number": 24,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Suara itu milik Maya, seller yang menjual barang ke semua alam.",
+      "background_prompt": "A small online shop packing room at night with shelves of parcels, laptop, shipping labels, red desk lamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya stands in her packing room with a fake polite smile, holding a phone and a shipping label. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, red desk lamp flickers subtly, Maya's eyes shift slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_025",
+      "scene_number": 25,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Ia menolak refund, karena alamat kuburan dianggap zona khusus.",
+      "background_prompt": "An online shop desk with laptop, pile of shipping labels, cardboard boxes, red desk lamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya sits confidently at the desk speaking into the phone with a polite fake smile and one raised finger. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, laptop glow flickers, Maya gives a tiny dismissive hand wave.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_026",
+      "scene_number": 26,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Arman mulai curiga, ini bukan salah kirim biasa.",
+      "background_prompt": "A dark alley near the abandoned house, wet ground, phone and wrong package glowing faintly, foggy midnight, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left staring intensely at the shipping label. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right peeking over Arman's shoulder with fearful curiosity. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom on the label, fog moves, both characters lean forward slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_027",
+      "scene_number": 27,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto menunjukkan label lama yang terkubur bersama nisannya.",
+      "background_prompt": "A cemetery edge at night with an old gravestone, delivery label stuck on a small stone, moonlight, fog, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands beside a gravestone pointing grumpily at an old delivery label attached to the stone. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan from label to Pak Karto, fog drifts, cloth knot moves softly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_028",
+      "scene_number": 28,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003",
+        "char_002"
+      ],
+      "vo": "Ternyata, Maya sudah lama menipu pelanggan hidup dan mati.",
+      "background_prompt": "A cemetery gate at midnight with old packages scattered near the entrance, dim lantern, fog, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2, 3, and 4 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from the reference figures. Create new acting poses for each character according to the scene action: Arman holds a pile of old labels on the left, Bowo reads them nervously in the middle, Pak Karto stands on the right with angry customer posture, all faces visible. Place all characters clearly without overlapping faces. Blend them naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, labels flutter slightly, characters exchange small shocked glances.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_029",
+      "scene_number": 29,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Bowo ingin pulang, tapi motor Arman mendadak terkunci sendiri.",
+      "background_prompt": "A parked delivery scooter in a dark village alley, keyhole glowing faintly, wet asphalt, fog and streetlamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman pulls at the scooter handle with panic, trying to unlock it while glancing toward the cemetery. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Small shake of scooter handle, slow push in, Arman's head turns nervously.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_030",
+      "scene_number": 30,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Pak Karto bilang, urusan COD harus selesai sebelum subuh.",
+      "background_prompt": "A village road between abandoned house and cemetery wall, distant pale moon, wet asphalt, package on ground, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left exhausted and scared holding his phone. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right pointing toward the pale horizon with strict urgency. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan toward the horizon, mist drifts, both characters pause tensely.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_031",
+      "scene_number": 31,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Mereka akhirnya memutuskan mencari gudang Maya malam itu.",
+      "background_prompt": "A quiet village road leading to a small warehouse area, wet asphalt, distant shop signs turned off, dim blue night light, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman sits forward on the scooter looking determined but nervous. Change the pose of the character in Figure 3 to a new acting pose: Bowo sits behind him clutching the courier bag with terrified eyes. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow side pan, scooter headlight glows, slight wind movement.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_032",
+      "scene_number": 32,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto ikut melompat di belakang, membuat motor nyaris rebah.",
+      "background_prompt": "A village road at night with a delivery scooter, package box strapped behind, foggy street, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto awkwardly balances behind a scooter with bundled feet, grumpy but determined, cloth fluttering in the wind. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slight comedic wobble motion, slow tracking forward, cloth flutters.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_033",
+      "scene_number": 33,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003",
+        "char_002"
+      ],
+      "vo": "Tiga makhluk panik itu berangkat seperti tim ekspedisi paling absurd.",
+      "background_prompt": "An empty midnight village road with dim streetlights, scooter headlight beam, wet road reflections, cinematic fog, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2, 3, and 4 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from the reference figures. Create new acting poses for each character according to the scene action: Arman drives nervously in front, Bowo clings behind him, Pak Karto perches awkwardly at the back, all characters visible and clearly separated. Place all characters clearly without overlapping faces. Blend them naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow tracking shot beside the scooter, subtle road vibration, fog passes by.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_034",
+      "scene_number": 34,
+      "duration": 3,
+      "characters_in_scene": [],
+      "vo": "Di gudang Maya, puluhan paket bergerak tanpa disentuh.",
+      "background_prompt": "An empty small warehouse at night with shelves of cardboard packages, some boxes slightly open, red emergency light, eerie shadows but no human silhouettes, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final cinematic environment scene using Figure 1 as the background. Keep the exact visual style as: cinematic semi-realistic 2D illustration. No characters, no people, no silhouettes. Emphasize the scene action through objects and atmosphere: several sealed packages on warehouse shelves tremble slightly under red light, no people or characters present. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, packages tremble subtly, red light flickers.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_035",
+      "scene_number": 35,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Maya tersenyum, belum tahu pelanggan teranehnya sudah datang.",
+      "background_prompt": "A small warehouse packing desk with laptop, parcel scanner, stacked boxes, red lamp, closed metal door, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya stands beside the packing desk with a confident fake smile, holding a scanner and checking a package label. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, scanner light blinks, Maya turns her eyes slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_036",
+      "scene_number": 36,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Arman mengetuk pintu gudang dengan gaya sopan tapi lututnya lemas.",
+      "background_prompt": "A metal warehouse door at night with small signboard, wet concrete, scattered boxes, dim exterior lamp, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left knocking politely with shaky knees. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right hiding behind the courier bag and peeking nervously. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Subtle handheld shot, Arman knocks gently, Bowo shifts backward.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_037",
+      "scene_number": 37,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto memilih masuk lewat tembok, karena katanya lebih praktis.",
+      "background_prompt": "An exterior warehouse wall at night with mist, faint red light leaking from windows, cardboard boxes near wall, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands half-facing the warehouse wall with a confident grumpy expression, preparing to pass through like a ghost. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, mist swirls, cloth edges ripple as he moves slightly forward.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_038",
+      "scene_number": 38,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004",
+        "char_002"
+      ],
+      "vo": "Maya langsung pucat saat pocong pelanggan muncul di samping rak.",
+      "background_prompt": "A dim warehouse aisle with shelves of cardboard packages, red light, old labels hanging, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Maya stands left frozen with fake smile collapsing into fear. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right beside the shelf with grumpy customer posture. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, Maya's hand trembles slightly, Pak Karto tilts his head.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_039",
+      "scene_number": 39,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003",
+        "char_004"
+      ],
+      "vo": "Bowo tetap pura-pura profesional, padahal bersembunyi di balik Arman.",
+      "background_prompt": "A warehouse entrance interior with stacked boxes, dim red lamp, metal door behind, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2, 3, and 4 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from the reference figures. Create new acting poses for each character according to the scene action: Arman stands left trying to look firm, Bowo peeks from behind him in the middle, Maya stands right trying to regain composure, all faces clear. Place all characters clearly without overlapping faces. Blend them naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slight push in, Bowo peeks and ducks, Maya straightens her posture.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_040",
+      "scene_number": 40,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Maya mengaku, ia menjual barang mistis agar viral di marketplace.",
+      "background_prompt": "A warehouse packing desk with laptop showing blurred marketplace layout, stacked parcels, red desk lamp, no readable text, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya stands beside the desk with nervous fake confidence, one hand explaining while the other hides a shipping label. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom, Maya's eyes dart sideways, desk lamp flickers.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_041",
+      "scene_number": 41,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_004"
+      ],
+      "vo": "Arman marah, karena gara-gara itu dia hampir pingsan di gang kuburan.",
+      "background_prompt": "A dim warehouse aisle with package shelves, opened boxes, red and blue night lighting, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left pointing angrily while still visibly scared. Change the pose of the character in Figure 3 to a new acting pose: Maya stands right stepping back with defensive hands raised. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Subtle handheld push in, Arman points with tiny hand movement, Maya steps back slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_042",
+      "scene_number": 42,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002",
+        "char_004"
+      ],
+      "vo": "Pak Karto lebih marah, karena radio dangdutnya belum juga datang.",
+      "background_prompt": "A warehouse shelf packed with wrong demon-head speakers and sealed parcels, red light, concrete floor, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Pak Karto stands left leaning forward with furious grumpy customer expression. Change the pose of the character in Figure 3 to a new acting pose: Maya stands right shrinking back while holding a parcel scanner. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, Pak Karto makes a small angry bob, Maya's scanner hand trembles.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_043",
+      "scene_number": 43,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003"
+      ],
+      "vo": "Bowo menemukan bukti: semua paket refund dikirim ke alamat makam.",
+      "background_prompt": "A warehouse table covered with shipping labels, return forms, cardboard boxes, dim red lamp, no readable text, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Bowo stands at the table holding a stack of labels with shocked wide eyes and open mouth. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom on labels then Bowo's shocked face, papers flutter lightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_044",
+      "scene_number": 44,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Artinya, Maya sengaja membuat hantu tidak bisa komplain.",
+      "background_prompt": "A dim warehouse corner with stacked returned packages, old stamps, cold red-blue lighting, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left reading a label with angry realization. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right pointing at a pile of return packages with terrified excitement. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, papers rustle, characters make tiny shocked glances.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_045",
+      "scene_number": 45,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto terdiam, untuk pertama kalinya ia tampak sedih.",
+      "background_prompt": "A quiet warehouse aisle with a single wrong package under soft red light, shelves fading into darkness, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands alone beside the wrong package, grumpy face softened into sadness, head slightly lowered. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow emotional push in, subtle cloth movement, lights dim softly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_046",
+      "scene_number": 46,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Ia cuma ingin mendengar lagu lama sebelum malam seratus harinya selesai.",
+      "background_prompt": "A quiet cemetery edge at night with old small radio-shaped memory object on a stone, moonlight, fog, gentle atmosphere, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands quietly near the memory object with emotional tired eyes, looking less angry and more lonely. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, mist drifts gently, Pak Karto's head lowers slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_047",
+      "scene_number": 47,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Arman yang tadinya takut, mulai merasa kasihan.",
+      "background_prompt": "A warehouse aisle with soft blue light from the open door, wrong package on the floor, quiet emotional mood, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman stands alone looking at the package with softened expression, one hand on his chest and phone lowered. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, Arman's expression softens, faint light shifts.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_048",
+      "scene_number": 48,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003"
+      ],
+      "vo": "Ia meminta Bowo mencari radio dangdut asli di tumpukan paket.",
+      "background_prompt": "A warehouse shelf maze full of parcels, dim red light, scattered shipping labels, concrete floor, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left determined, pointing toward a high shelf. Change the pose of the character in Figure 3 to a new acting pose: Bowo stands right reluctantly searching through boxes with nervous face. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow pan across boxes, Bowo moves a box slightly, Arman nods.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_049",
+      "scene_number": 49,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003"
+      ],
+      "vo": "Bowo menemukan radio kecil, tapi ditempel stiker: khusus alam sebelah.",
+      "background_prompt": "A warehouse shelf close-up with a small old radio among cardboard boxes, eerie sticker-like label without readable text, red-blue light, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Bowo holds a small old radio with both hands, eyes wide with comedic fear. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom on the radio, Bowo's hands shake lightly, tiny light reflection.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_050",
+      "scene_number": 50,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Maya mencoba kabur, tapi semua paket menutup pintu sendiri.",
+      "background_prompt": "A warehouse metal exit door blocked by stacked cardboard boxes, red warning light, spooky comedic atmosphere, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya runs toward the blocked door with panic, arms raised, fake confidence completely gone. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Small box shift motion, slow push in, Maya freezes in panic.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_051",
+      "scene_number": 51,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_004"
+      ],
+      "vo": "Arman menyuruh Maya minta maaf ke semua pelanggan, termasuk yang sudah wafat.",
+      "background_prompt": "A warehouse packing desk with phone, parcels, dim red light, blocked exit in background, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left firmly holding the phone as evidence. Change the pose of the character in Figure 3 to a new acting pose: Maya stands right ashamed and frightened, hands lowered. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, Arman lowers his phone slightly, Maya nods timidly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_052",
+      "scene_number": 52,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004",
+        "char_002"
+      ],
+      "vo": "Maya akhirnya gemetar meminta maaf pada Pak Karto.",
+      "background_prompt": "A dim warehouse aisle with parcels on shelves, soft red-blue lighting, wrong package on floor, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Maya stands left bowing slightly with trembling hands. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right listening with stern but calmer expression. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow emotional push in, Maya bows subtly, Pak Karto's head tilts.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_053",
+      "scene_number": 53,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto menerima, asal radionya diputar satu lagu.",
+      "background_prompt": "A warehouse floor with small old radio placed on a cardboard box, soft moonlight from window, misty emotional mood, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands beside the small radio with calmer grumpy face, looking hopeful. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom on the radio then Pak Karto, tiny radio light flickers.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_054",
+      "scene_number": 54,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_003",
+        "char_002"
+      ],
+      "vo": "Saat lagu dangdut berbunyi, suasana horor mendadak jadi hajatan kecil.",
+      "background_prompt": "A warehouse aisle transformed by warm small lights from opened boxes, old radio on a box, no crowd, festive but spooky mood, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2, 3, and 4 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from the reference figures. Create new acting poses for each character according to the scene action: Arman smiles awkwardly on the left, Bowo claps nervously in the middle, Pak Karto sways happily on the right, all faces clear. Place all characters clearly without overlapping faces. Blend them naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Gentle handheld sway, tiny clapping movement, Pak Karto sways softly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_055",
+      "scene_number": 55,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_002"
+      ],
+      "vo": "Pak Karto tertawa pelan, lalu tubuhnya mulai bercahaya.",
+      "background_prompt": "A quiet warehouse aisle with warm glow around a small radio, packages on shelves, soft mist, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Pak Karto stands peacefully near the radio, grumpy expression softened into a small grateful laugh, faint glow around his shroud. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, gentle glow brightens, cloth moves softly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_056",
+      "scene_number": 56,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001",
+        "char_002"
+      ],
+      "vo": "Sebelum pergi, ia memberi Arman bintang lima dari alam sana.",
+      "background_prompt": "A warehouse entrance with soft dawn-blue light outside, old radio on box, mist fading, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figures 2 and 3 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original poses from Figures 2 or 3. Change the pose of the character in Figure 2 to a new acting pose: Arman stands left holding his phone with stunned relief. Change the pose of the character in Figure 3 to a new acting pose: Pak Karto stands right glowing faintly, giving a small approving nod. Place both characters naturally in the scene with clear left/right or foreground/background positioning. Blend both characters naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in on Arman's phone glow, Pak Karto nods gently, mist fades.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_057",
+      "scene_number": 57,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_003"
+      ],
+      "vo": "Bowo menangis terharu, tapi tetap sempat minta ongkir.",
+      "background_prompt": "A warehouse corner with parcels, warm fading glow, comedic emotional mood, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Bowo stands alone wiping tears with one hand while holding out the other hand awkwardly as if asking payment. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Subtle comedic push in, Bowo wipes tears, hand extends slightly.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_058",
+      "scene_number": 58,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_004"
+      ],
+      "vo": "Maya dihukum membuat toko khusus refund jujur untuk manusia dan hantu.",
+      "background_prompt": "A cleaned online shop desk at dawn with organized return packages, small signboard without readable text, warm light, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Maya sits at the desk looking humbled, organizing return packages carefully with a sincere expression. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow push in, papers move gently, Maya exhales and nods.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_059",
+      "scene_number": 59,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Arman pulang saat subuh, yakin hidupnya kembali normal.",
+      "background_prompt": "A quiet village road at dawn with soft orange-blue sky, parked delivery scooter, empty alley, wet asphalt, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman rides his scooter slowly down the quiet dawn road, relieved but exhausted, courier bag still on his shoulder. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow tracking behind the scooter, dawn light grows softly, road reflections move.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    },
+    {
+      "scene_id": "scene_060",
+      "scene_number": 60,
+      "duration": 3,
+      "characters_in_scene": [
+        "char_001"
+      ],
+      "vo": "Sampai aplikasi berbunyi lagi: pesanan baru dari Nyi Roro Kidul.",
+      "background_prompt": "A courier smartphone mounted on a scooter handlebar at dawn, quiet village road background, mysterious green-blue notification glow, 16:9 horizontal composition, cinematic semi-realistic 2D illustration, no people, no characters",
+      "background_negative_prompt": "people, person, human, face, body, silhouette, shadow person, blurry person, extra character, text, watermark, logo, low quality, distorted background, inconsistent style, wrong visual style",
+      "image_prompt": "Create a natural final scene using Figure 1 as the background. Use Figure 2 only for character identity, face, hair, clothing, clothing color, body proportions, silhouette, age, and visual style. Keep the exact visual style as: cinematic semi-realistic 2D illustration. Do not copy the original pose from Figure 2. Change the character pose to a new acting pose: Arman stops his scooter and stares at the phone notification with horrified disbelief, one hand frozen above the screen. Blend the character naturally into the lighting and perspective of Figure 1. The final result should be a single cinematic scene.",
+      "video_prompt": "Slow zoom onto Arman's shocked face and glowing phone, tiny hand tremble, final suspenseful pause.",
+      "negative_prompt": "inconsistent character, changed face, changed hairstyle, changed outfit, changed clothing color, changed body shape, wrong visual style, mixed style, low quality, blurry, distorted hands, extra fingers, extra limbs, text, watermark, logo"
+    }
+  ],
+  "voice_direction": {
+    "language": "id",
+    "tone": "dramatic, emotional, cinematic",
+    "pace": "medium slow",
+    "voice_type": "adult Indonesian narrator",
+    "emotion": "curious, tense, heartfelt",
+    "tts_note": "Read naturally with pauses between emotional beats. Do not sound robotic."
+  },
+  "full_voice_over": "Malam itu, Arman sadar paketnya bukan dikirim ke manusia. Di aplikasi tertulis, alamatnya cuma gang buntu dekat makam. Arman pikir ini cuma order iseng anak kampung. Tapi makin masuk gang, sinyal HP-nya hilang total. Lalu paket itu bergetar seperti ada yang mengetuk dari dalam. Arman nyaris kabur, sampai terdengar suara serak memanggil namanya. Dari balik pagar, muncul pocong tua yang kelihatan sangat tersinggung. Bukannya menakuti, pocong itu malah minta tanda terima. Arman gemetar, tapi aplikasi memaksa tombol selesai ditekan. Saat paket dibuka, isinya speaker berbentuk kepala setan. Pak Karto kecewa, karena yang dia pesan cuma radio dangdut. Arman bingung, sejak kapan pocong bisa belanja online. Pocong itu bilang, kuburan sekarang sudah ada Wi-Fi. Masalahnya, barang salah alamat ini tidak bisa diretur biasa. Setiap Arman menekan refund, layar HP berubah jadi tulisan kafan. Arman menelepon Bowo, satu-satunya teman yang sok berani. Bowo tertawa, sampai dengar suara pocong ikut ngomel. Pak Karto menuntut barangnya diganti malam itu juga. Kalau tidak, rating Arman katanya akan dihantui selamanya. Bowo datang membawa solusi paling bodoh: pura-pura jadi customer service. Tapi Pak Karto langsung tahu, karena Bowo pakai sandal jepit. Malam makin aneh ketika speaker setan itu menyala sendiri. Dari speaker keluar suara perempuan, manis tapi mencurigakan. Suara itu milik Maya, seller yang menjual barang ke semua alam. Ia menolak refund, karena alamat kuburan dianggap zona khusus. Arman mulai curiga, ini bukan salah kirim biasa. Pak Karto menunjukkan label lama yang terkubur bersama nisannya. Ternyata, Maya sudah lama menipu pelanggan hidup dan mati. Bowo ingin pulang, tapi motor Arman mendadak terkunci sendiri. Pak Karto bilang, urusan COD harus selesai sebelum subuh. Mereka akhirnya memutuskan mencari gudang Maya malam itu. Pak Karto ikut melompat di belakang, membuat motor nyaris rebah. Tiga makhluk panik itu berangkat seperti tim ekspedisi paling absurd. Di gudang Maya, puluhan paket bergerak tanpa disentuh. Maya tersenyum, belum tahu pelanggan teranehnya sudah datang. Arman mengetuk pintu gudang dengan gaya sopan tapi lututnya lemas. Pak Karto memilih masuk lewat tembok, karena katanya lebih praktis. Maya langsung pucat saat pocong pelanggan muncul di samping rak. Bowo tetap pura-pura profesional, padahal bersembunyi di balik Arman. Maya mengaku, ia menjual barang mistis agar viral di marketplace. Arman marah, karena gara-gara itu dia hampir pingsan di gang kuburan. Pak Karto lebih marah, karena radio dangdutnya belum juga datang. Bowo menemukan bukti: semua paket refund dikirim ke alamat makam. Artinya, Maya sengaja membuat hantu tidak bisa komplain. Pak Karto terdiam, untuk pertama kalinya ia tampak sedih. Ia cuma ingin mendengar lagu lama sebelum malam seratus harinya selesai. Arman yang tadinya takut, mulai merasa kasihan. Ia meminta Bowo mencari radio dangdut asli di tumpukan paket. Bowo menemukan radio kecil, tapi ditempel stiker: khusus alam sebelah. Maya mencoba kabur, tapi semua paket menutup pintu sendiri. Arman menyuruh Maya minta maaf ke semua pelanggan, termasuk yang sudah wafat. Maya akhirnya gemetar meminta maaf pada Pak Karto. Pak Karto menerima, asal radionya diputar satu lagu. Saat lagu dangdut berbunyi, suasana horor mendadak jadi hajatan kecil. Pak Karto tertawa pelan, lalu tubuhnya mulai bercahaya. Sebelum pergi, ia memberi Arman bintang lima dari alam sana. Bowo menangis terharu, tapi tetap sempat minta ongkir. Maya dihukum membuat toko khusus refund jujur untuk manusia dan hantu. Arman pulang saat subuh, yakin hidupnya kembali normal. Sampai aplikasi berbunyi lagi: pesanan baru dari Nyi Roro Kidul."
+}
