@@ -5,9 +5,12 @@ import { Download, FileCode, FileJson, FileText, Package, FolderDown, CheckCircl
 const fixFiles = [
   { name: 'APPLY-GUIDE.md', desc: 'Panduan lengkap langkah demi langkah (BACA INI DULU)', icon: FileText, href: '/kiwul-fixes/APPLY-GUIDE.md', size: '7.4 KB' },
   { name: 'kiwul-fixes-bundle.zip', desc: 'SEMUA file fix (workflow + proxy + route) dalam satu ZIP', icon: Package, href: '/kiwul-fixes/kiwul-fixes-bundle.zip', size: '74 KB', highlight: true },
+  { name: 'generate-prompts.cjs', desc: 'Script auto-generate prompt untuk 60 scene (Pocong Salah Alamat COD) - BARU', icon: FileCode, href: '/kiwul-fixes/generate-prompts.cjs', size: '36 KB', highlight: true },
+  { name: 'TEMPLATE-PROMPTS.md', desc: 'Dokumentasi 7 template prompt + tips konsistensi visual', icon: FileText, href: '/kiwul-fixes/TEMPLATE-PROMPTS.md', size: '8 KB' },
   { name: 'image_qwen_image_edit_2509.json', desc: 'Workflow ComfyUI baru (FP8, tanpa AuraFlow)', icon: FileJson, href: '/kiwul-fixes/image_qwen_image_edit_2509.json', size: '4.3 KB' },
   { name: 'image-route.ts', desc: 'File route.ts LENGKAP (sudah +negative prompt anti-stacking)', icon: FileCode, href: '/kiwul-fixes/image-route.ts', size: '18.6 KB' },
   { name: 'video-route.ts', desc: 'File video route.ts (patch frame count untuk durasi 5 detik)', icon: FileCode, href: '/kiwul-fixes/video-route.ts', size: '12 KB' },
+  { name: 'background-route.ts', desc: 'File background route.ts (cache-bust fix, simpan URL bukan data URL)', icon: FileCode, href: '/kiwul-fixes/background-route.ts', size: '8 KB' },
   { name: 'server.py', desc: 'Kode proxy baru port 9500 (FastAPI)', icon: FileCode, href: '/kiwul-fixes/server.py', size: '12.3 KB' },
   { name: 'check-negative-prompt-forward.py', desc: 'Tool test proxy forward negative_prompt', icon: FileCode, href: '/kiwul-fixes/check-negative-prompt-forward.py', size: '6.2 KB' },
   { name: 'requirements.txt', desc: 'Dependency Python untuk proxy', icon: FileText, href: '/kiwul-fixes/requirements.txt', size: '64 B' },
