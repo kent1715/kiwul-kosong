@@ -1,0 +1,39 @@
+{
+  "project": {
+    "title": "Test Storyboard",
+    "language": "id",
+    "aspect_ratio": "16:9",
+    "resolution": "1920x1080",
+    "duration_seconds": 30,
+    "style": "cinematic semi-realistic 2D illustration"
+  },
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "scene_number": 1,
+      "duration": 5,
+      "vo": "Pada suatu malam yang sunyi, seorang pemuda berjalan menyusuri gang sempit.",
+      "image_prompt": "Wide shot of a young man walking through a narrow dimly-lit alley at night, cinematic lighting.",
+      "video_prompt": "Camera slowly tracks forward as the young man walks down the narrow alley, dramatic shadows, mist on the ground.",
+      "negative_prompt": ""
+    },
+    {
+      "scene_id": "scene_002",
+      "scene_number": 2,
+      "duration": 5,
+      "vo": "Tiba-tiba, ia mendengar suara aneh dari kejauhan.",
+      "image_prompt": "Close-up of the young man's surprised face, looking off-camera, dramatic lighting.",
+      "video_prompt": "Slow zoom-in on the young man's surprised face, eyes widening, slight head turn to look off-camera.",
+      "negative_prompt": ""
+    },
+    {
+      "scene_id": "scene_003",
+      "scene_number": 3,
+      "duration": 5,
+      "vo": "Ia berjongkok, mencoba mengintip dari balik tembok.",
+      "image_prompt": "Medium shot of the young man crouching behind a wall, peeking around the corner, tense posture.",
+      "video_prompt": "Camera tilts down as the young man crouches, then slowly pans around the corner revealing a dark doorway.",
+      "negative_prompt": ""
+    }
+  ]
+}

@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Simple Storyboard Studio - Prisma schema
+// Lighter version of Kiwul: only 3 columns (VO, Image upload, Video generate)
 
 generator client {
   provider = "prisma-client-js"
@@ -13,20 +10,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model StoryboardProject {
+  id               String   @id @default(cuid())
+  title            String
+  language         String   @default("id")
+  aspect_ratio     String   @default("16:9")
+  resolution       String   @default("1920x1080")
+  duration_seconds Int      @default(180)
+  style            String   @default("cinematic semi-realistic 2D illustration")
+  status           String   @default("draft")
+  json_path        String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  scenes           StoryboardScene[]
+
+  @@map("storyboard_projects")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model StoryboardScene {
+  id              String   @id @default(cuid())
+  project_id      String
+  scene_id        String
+  scene_number    Int
+  duration        Int      @default(5)
+  vo              String?
+  image_prompt    String?
+  video_prompt    String?
+  negative_prompt String?
+  image_path      String?
+  video_path      String?
+  image_status    String   @default("pending")
+  video_status    String   @default("pending")
+  locked          Boolean  @default(false)
+  error_message   String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  project StoryboardProject @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@index([project_id])
+  @@map("storyboard_scenes")
+}
+
+model StoryboardProvider {
+  id              String   @id @default(cuid())
+  type            String // "video" only (image is upload, no provider needed)
+  name            String
+  provider        String   @default("openai_video_compatible")
+  base_url        String
+  endpoint        String   @default("/v1/videos/generations")
+  model           String
+  api_key         String?
+  timeout_seconds Int      @default(1800)
+  is_default      Boolean  @default(false)
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@map("storyboard_providers")
 }
